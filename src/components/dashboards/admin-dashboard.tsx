@@ -1,3 +1,4 @@
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { DollarSign, Briefcase, Users, Heart } from "lucide-react";
 import { DonationCharts } from "@/components/charts";
@@ -16,7 +17,7 @@ export default function AdminDashboard() {
   const totalVolunteers = allMockUsers.filter(u => u.role === 'Volunteer').length;
 
   const stats = [
-    { title: "Donations (INR)", value: `₹${totalDonationsINR.toLocaleString('en-IN')}`, icon: <DollarSign className="h-6 w-6 text-muted-foreground" />, isINR: true },
+    { title: "Donations (INR)", value: totalDonationsINR.toLocaleString('en-IN'), icon: null, isINR: true },
     { title: "Donations (USD)", value: `$${totalDonationsUSD.toLocaleString()}`, icon: <DollarSign className="h-6 w-6 text-muted-foreground" /> },
     { title: "Active Projects", value: totalProjects, icon: <Briefcase className="h-6 w-6 text-muted-foreground" /> },
     { title: "Beneficiaries Reached", value: totalBeneficiaries.toLocaleString(), icon: <Heart className="h-6 w-6 text-muted-foreground" /> },
@@ -33,7 +34,7 @@ export default function AdminDashboard() {
               {stat.icon}
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold" dangerouslySetInnerHTML={{ __html: stat.isINR ? `&#8377;${totalDonationsINR.toLocaleString('en-IN')}` : String(stat.value) }}></div>
+              <div className="text-2xl font-bold" dangerouslySetInnerHTML={{ __html: stat.isINR ? `&#8377;${stat.value}` : String(stat.value) }}></div>
             </CardContent>
           </Card>
         ))}
