@@ -52,6 +52,7 @@ const navItemsByRole: Record<Role, { href: string; icon: React.ReactNode; label:
   ],
   Donor: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
+    { href: "/projects", icon: <Briefcase />, label: "Projects" },
   ],
 };
 
