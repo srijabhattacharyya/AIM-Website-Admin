@@ -46,14 +46,14 @@ export default function VolunteerDashboard() {
       <Card className="md:col-span-2">
         <CardHeader>
           <CardTitle>Resources</CardTitle>
-          <CardDescription>Access training materials and media assets.</CardDescription>
+          <CardDescription>Access training materials and photo assets.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
-          <Link href="/media">
+          <Link href="/photos">
             <div className="flex items-center gap-4 rounded-lg border p-4 hover:bg-accent hover:text-accent-foreground">
               <BookOpen className="h-8 w-8 text-primary" />
               <div>
-                <h3 className="font-semibold">Training & Media</h3>
+                <h3 className="font-semibold">Training & Photos</h3>
                 <p className="text-sm text-muted-foreground">View guides and photos.</p>
               </div>
             </div>

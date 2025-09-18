@@ -35,7 +35,7 @@ export type Task = {
   completed: boolean;
 };
 
-export type Media = {
+export type Photo = {
   id: string;
   url: string;
   name: string;

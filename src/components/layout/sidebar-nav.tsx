@@ -33,22 +33,22 @@ const navItemsByRole: Record<Role, { href: string; icon: React.ReactNode; label:
     { href: "/donations", icon: <DollarSign />, label: "Donations" },
     { href: "/projects", icon: <Briefcase />, label: "Projects" },
     { href: "/users", icon: <Users />, label: "Users" },
-    { href: "/media", icon: <ImageIcon />, label: "Media" },
+    { href: "/photos", icon: <ImageIcon />, label: "Photos" },
     { href: "/settings", icon: <Settings />, label: "Settings" },
   ],
   Manager: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
     { href: "/donations", icon: <DollarSign />, label: "Donations" },
     { href: "/projects", icon: <Briefcase />, label: "Projects" },
-    { href: "/media", icon: <ImageIcon />, label: "Media" },
+    { href: "/photos", icon: <ImageIcon />, label: "Photos" },
   ],
   Volunteer: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
-    { href: "/media", icon: <ImageIcon />, label: "Media" },
+    { href: "/photos", icon: <ImageIcon />, label: "Photos" },
   ],
   Intern: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
-    { href: "/media", icon: <ImageIcon />, label: "Media" },
+    { href: "/photos", icon: <ImageIcon />, label: "Photos" },
   ],
   Donor: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
