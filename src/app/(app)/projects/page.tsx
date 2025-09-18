@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { mockProjects } from "@/lib/data";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 export default function ProjectsPage() {
@@ -36,8 +36,12 @@ export default function ProjectsPage() {
             <CardContent className="flex-1">
               <p className="text-sm text-muted-foreground">{project.description}</p>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-between items-center">
               <Badge variant={getBadgeVariant(project.status) as any}>{project.status}</Badge>
+              <Button variant="destructive" size="icon">
+                <Trash2 className="h-4 w-4" />
+                <span className="sr-only">Delete project</span>
+              </Button>
             </CardFooter>
           </Card>
         ))}
