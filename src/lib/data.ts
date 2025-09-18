@@ -1,4 +1,4 @@
-import type { User, Role, Project, Donation, Task, Photo } from './types';
+import type { User, Role, Project, Donation, Task, Upload } from './types';
 
 export const mockUsers: Record<Role, User> = {
   Admin: { id: "user-admin-01", name: "Alex Ray", email: "alex.ray@example.com", avatarUrl: "https://picsum.photos/seed/alex/100/100", role: "Admin" },
@@ -36,7 +36,7 @@ export const mockTasks: Task[] = [
   { id: "task-04", title: "Prepare weekly progress report", projectId: "proj-02", completed: true },
 ];
 
-export const mockPhotos: Photo[] = [
+export const mockUploads: Upload[] = [
   { id: "med-01", name: "Community Meeting", url: "https://picsum.photos/seed/media1/400/300", uploadedAt: "2023-10-05" },
   { id: "med-02", name: "School Opening", url: "https://picsum.photos/seed/media2/400/300", uploadedAt: "2023-09-20" },
   { id: "med-03", name: "Clinic Inauguration", url: "https://picsum.photos/seed/media3/400/300", uploadedAt: "2023-08-15" },
