@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { mockProjects } from "@/lib/data";
-import { PlusCircle, Trash2, Pencil } from "lucide-react";
+import { PlusCircle, Trash2, Pencil, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/use-auth";
 import Link from "next/link";
@@ -31,20 +31,20 @@ export default function ProjectsPage() {
   const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedInitiative, setSelectedInitiative] = useState<Initiative | "all">("all");
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true); 
+    
     const loadProjects = () => {
       const storedProjectsString = localStorage.getItem(PROJECTS_STORAGE_KEY);
 
       if (storedProjectsString && storedProjectsString !== "[]") {
-        // ✅ Use saved projects
         setProjects(JSON.parse(storedProjectsString));
       } else if (!storedProjectsString) {
-        // ✅ First visit → seed mock data
         localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(mockProjects));
         setProjects(mockProjects);
       } else {
-        // ✅ Empty array stays empty
         setProjects([]);
       }
     };
@@ -66,7 +66,7 @@ export default function ProjectsPage() {
     const updatedProjects = projects.filter((p) => p.id !== projectId);
     setProjects(updatedProjects);
     localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(updatedProjects));
-    window.dispatchEvent(new Event("projects-updated")); // notify others
+    window.dispatchEvent(new Event("projects-updated"));
   };
 
   const getBadgeVariant = (status: string) => {
@@ -86,6 +86,14 @@ export default function ProjectsPage() {
     selectedInitiative === "all"
       ? projects
       : projects.filter((p) => p.initiative === selectedInitiative);
+
+  if (!hydrated) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
