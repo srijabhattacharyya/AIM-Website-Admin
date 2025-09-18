@@ -29,6 +29,8 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { type User, type Role } from "@/lib/types";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const USERS_STORAGE_KEY = "aim-foundation-users";
 const ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
@@ -43,6 +45,11 @@ type UserFormValues = z.infer<typeof userFormSchema>;
 
 export default function AddUserPage() {
   const router = useRouter();
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(userFormSchema),
@@ -54,6 +61,8 @@ export default function AddUserPage() {
   });
 
   const onSubmit = (data: UserFormValues) => {
+    if (!hydrated) return;
+
     const storedUsersString = localStorage.getItem(USERS_STORAGE_KEY);
     const storedUsers: User[] = storedUsersString ? JSON.parse(storedUsersString) : [];
 
@@ -68,6 +77,14 @@ export default function AddUserPage() {
     window.dispatchEvent(new Event("users-updated"));
     router.push("/users");
   };
+
+  if (!hydrated) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">

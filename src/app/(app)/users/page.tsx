@@ -13,17 +13,16 @@ import Link from "next/link";
 import { PlusCircle, Loader2 } from "lucide-react";
 
 const USERS_STORAGE_KEY = "aim-foundation-users";
+const ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
+
 
 export default function UsersPage() {
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [hydrated, setHydrated] = useState(false);
   
-  const roles: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
-
   useEffect(() => {
-    setHydrated(true);
-
+    
     const loadUsers = () => {
       const storedUsersString = localStorage.getItem(USERS_STORAGE_KEY);
       if (storedUsersString && storedUsersString !== "[]") {
@@ -35,7 +34,8 @@ export default function UsersPage() {
         setUsers([]);
       }
     };
-
+    
+    setHydrated(true);
     loadUsers();
 
     const handleStorageChange = () => loadUsers();
@@ -119,7 +119,7 @@ export default function UsersPage() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {roles.map(role => (
+                            {ROLES.map(role => (
                               <SelectItem key={role} value={role}>{role}</SelectItem>
                             ))}
                           </SelectContent>
