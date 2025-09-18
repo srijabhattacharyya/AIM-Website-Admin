@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import type { User } from "@/lib/types";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user: authUser, loading } = useAuth();
   const router = useRouter();
 
   // Temporary user for development
@@ -22,6 +22,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     role: "Admin",
     status: "Active"
   };
+  
+  const user = authUser || devUser;
+
 
   // The original authentication logic is commented out for development.
   /*
@@ -46,7 +49,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-screen">
         <Sidebar collapsible="icon">
           {/* Use the dev user's role for the sidebar */}
-          <SidebarNav role={devUser.role} />
+          <SidebarNav role={user.role} />
         </Sidebar>
         <div className="flex flex-1 flex-col">
           <Header />

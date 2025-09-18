@@ -43,8 +43,6 @@ export function Header() {
     return name.split(' ').map(n => n[0]).join('');
   }
 
-  if (!user) return null;
-
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card px-4 sm:px-6">
       <SidebarTrigger className="md:hidden" />
