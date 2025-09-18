@@ -213,7 +213,7 @@ export default function EditProjectPage() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select project status" />
-                        </Trigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="Planning">Planning</SelectItem>
