@@ -78,17 +78,23 @@ export default function EditProjectPage() {
         const found = storedProjects.find((p) => p.id === projectId);
         if (found) {
             setProject(found);
-            form.reset({
-                name: found.name,
-                initiative: found.initiative,
-                description: found.description,
-                status: found.status,
-                imageUrl: found.imageUrl || "",
-            });
         }
     }
     setLoading(false);
-  }, [projectId, form]);
+  }, [projectId]);
+
+  // ✅ Sync form after project is loaded
+  useEffect(() => {
+    if (project) {
+        form.reset({
+            name: project.name,
+            initiative: project.initiative,
+            description: project.description,
+            status: project.status,
+            imageUrl: project.imageUrl || "",
+        });
+    }
+  }, [project, form]);
 
 
   const onSubmit = (data: ProjectFormValues) => {
@@ -207,7 +213,7 @@ export default function EditProjectPage() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select project status" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="Planning">Planning</SelectItem>
