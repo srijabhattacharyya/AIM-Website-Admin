@@ -44,12 +44,18 @@ export const mockMedia: Media[] = [
 ];
 
 const rawMonthlyTrend = [
-  { month: "Jan", INR: 40000, USD: 500 },
-  { month: "Feb", INR: 30000, USD: 350 },
-  { month: "Mar", INR: 50000, USD: 600 },
-  { month: "Apr", INR: 45000, USD: 550 },
-  { month: "May", INR: 60000, USD: 700 },
-  { month: "Jun", INR: 55000, USD: 650 },
+    { month: 'Jan', INR: 40000, USD: 500 },
+    { month: 'Feb', INR: 30000, USD: 350 },
+    { month: 'Mar', INR: 50000, USD: 600 },
+    { month: 'Apr', INR: 45000, USD: 550 },
+    { month: 'May', INR: 60000, USD: 700 },
+    { month: 'Jun', INR: 55000, USD: 650 },
+    { month: 'Jul', INR: 70000, USD: 800 },
+    { month: 'Aug', INR: 65000, USD: 750 },
+    { month: 'Sep', INR: 75000, USD: 850 },
+    { month: 'Oct', INR: 80000, USD: 900 },
+    { month: 'Nov', INR: 90000, USD: 1000 },
+    { month: 'Dec', INR: 85000, USD: 950 },
 ];
 
 export const donationMonthlyTrend = rawMonthlyTrend.map(d => ({

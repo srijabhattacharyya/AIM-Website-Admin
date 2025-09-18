@@ -54,7 +54,7 @@ export function DonationCharts() {
       <Card>
         <CardHeader>
           <CardTitle>Monthly Donation Trends</CardTitle>
-          <CardDescription>January - June 2023</CardDescription>
+          <CardDescription>View the donation trend over the last year.</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig} className="h-[250px] w-full">
