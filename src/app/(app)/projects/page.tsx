@@ -23,15 +23,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { initiatives, type Initiative, type Project } from "@/lib/types";
+import { initiatives, type Initiative, type Project, type User } from "@/lib/types";
 
 const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
 
 export default function ProjectsPage() {
-  const { user } = useAuth();
+  const { user: authUser } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedInitiative, setSelectedInitiative] = useState<Initiative | "all">("all");
   const [hydrated, setHydrated] = useState(false);
+  
+  // Temporary user for development
+  const devUser: User = {
+    id: "user-admin-dev",
+    name: "Dev Admin",
+    email: "dev@example.com",
+    avatarUrl: "https://picsum.photos/seed/dev/100/100",
+    role: "Admin",
+    status: "Active"
+  };
+
+  const user = authUser || devUser;
+
 
   useEffect(() => {
     setHydrated(true); 

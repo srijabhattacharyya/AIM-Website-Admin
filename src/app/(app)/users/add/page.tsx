@@ -47,8 +47,20 @@ type UserFormValues = z.infer<typeof userFormSchema>;
 
 export default function AddUserPage() {
   const router = useRouter();
-  const { user: currentUser } = useAuth();
+  const { user: authUser } = useAuth();
   const [hydrated, setHydrated] = useState(false);
+  
+  // Temporary user for development
+  const devUser: User = {
+    id: "user-admin-dev",
+    name: "Dev Admin",
+    email: "dev@example.com",
+    avatarUrl: "https://picsum.photos/seed/dev/100/100",
+    role: "Admin",
+    status: "Active"
+  };
+
+  const currentUser = authUser || devUser;
 
   useEffect(() => {
     setHydrated(true);
@@ -177,7 +189,7 @@ export default function AddUserPage() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="Active">Active</SelectItem>

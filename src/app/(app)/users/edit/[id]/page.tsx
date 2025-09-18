@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -49,7 +50,20 @@ export default function EditUserPage() {
   const router = useRouter();
   const params = useParams();
   const userId = params?.id as string;
-  const { user: currentUser } = useAuth();
+  const { user: authUser } = useAuth();
+  
+  // Temporary user for development
+  const devUser: User = {
+    id: "user-admin-dev",
+    name: "Dev Admin",
+    email: "dev@example.com",
+    avatarUrl: "https://picsum.photos/seed/dev/100/100",
+    role: "Admin",
+    status: "Active"
+  };
+
+  const currentUser = authUser || devUser;
+
 
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -226,7 +240,7 @@ export default function EditUserPage() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="Active">Active</SelectItem>

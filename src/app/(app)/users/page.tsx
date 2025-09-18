@@ -47,9 +47,22 @@ const USERS_STORAGE_KEY = "aim-foundation-users";
 const ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
 
 export default function UsersPage() {
-  const { user: currentUser } = useAuth();
+  const { user: authUser } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [hydrated, setHydrated] = useState(false);
+
+  // Temporary user for development
+  const devUser: User = {
+    id: "user-admin-dev",
+    name: "Dev Admin",
+    email: "dev@example.com",
+    avatarUrl: "https://picsum.photos/seed/dev/100/100",
+    role: "Admin",
+    status: "Active"
+  };
+
+  const currentUser = authUser || devUser;
+
 
   useEffect(() => {
     const loadUsers = () => {

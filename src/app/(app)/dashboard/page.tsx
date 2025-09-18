@@ -6,9 +6,23 @@ import ManagerDashboard from "@/components/dashboards/manager-dashboard";
 import VolunteerDashboard from "@/components/dashboards/volunteer-dashboard";
 import InternDashboard from "@/components/dashboards/intern-dashboard";
 import DonorDashboard from "@/components/dashboards/donor-dashboard";
+import type { User } from "@/lib/types";
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user: authUser } = useAuth();
+  
+  // Temporary user for development
+  const devUser: User = {
+    id: "user-admin-dev",
+    name: "Dev Admin",
+    email: "dev@example.com",
+    avatarUrl: "https://picsum.photos/seed/dev/100/100",
+    role: "Admin",
+    status: "Active"
+  };
+
+  const user = authUser || devUser;
+
 
   if (!user) {
     return null; 

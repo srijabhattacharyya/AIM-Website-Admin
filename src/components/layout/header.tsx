@@ -20,12 +20,24 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
-import type { Role } from "@/lib/types";
+import type { Role, User } from "@/lib/types";
 import { ChevronsUpDown } from "lucide-react";
 
 export function Header() {
-  const { user, logout, setRole } = useAuth();
+  const { user: authUser, logout, setRole } = useAuth();
   const roles: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
+
+  // Temporary user for development
+  const devUser: User = {
+    id: "user-admin-dev",
+    name: "Dev Admin",
+    email: "dev@example.com",
+    avatarUrl: "https://picsum.photos/seed/dev/100/100",
+    role: "Admin",
+    status: "Active"
+  };
+
+  const user = authUser || devUser; // Use authUser if available, otherwise fall back to devUser
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('');
