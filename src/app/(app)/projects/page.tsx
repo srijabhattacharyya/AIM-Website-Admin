@@ -51,9 +51,12 @@ export default function ProjectsPage() {
     };
 
     window.addEventListener("projects-updated", handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+
 
     return () => {
       window.removeEventListener("projects-updated", handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
