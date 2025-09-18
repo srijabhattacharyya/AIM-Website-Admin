@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import {
   Home,
   DollarSign,
@@ -59,7 +58,7 @@ const navItemsByRole: Record<Role, { href: string; icon: React.ReactNode; label:
 
 const Logo = () => (
     <div className="flex items-center gap-2 p-4">
-        <Image src="/images/logo.jpg" alt="AIM Foundation Logo" width={32} height={32} className="rounded-sm" />
+        <Handshake className="h-8 w-8 text-sidebar-primary" />
         <h1 className="text-xl font-bold text-sidebar-foreground">AIM Foundation</h1>
     </div>
 )
