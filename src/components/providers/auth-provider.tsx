@@ -107,13 +107,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/login");
   }, [router]);
 
-  const setRole = useCallback((role: Role) => {
+  const setRole = (role: Role) => {
     if (user) {
       const switchedUser = { ...user, role: role };
       setUser(switchedUser);
       localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(switchedUser));
     }
-  }, [user]);
+  };
 
   const value = { user, loading, login, googleLogin, logout, setRole };
 
