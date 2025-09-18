@@ -31,25 +31,31 @@ import {
 import { type User, type Role } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 const USERS_STORAGE_KEY = "aim-foundation-users";
-const ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
+const ALL_ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
 
 const userFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  role: z.enum(ROLES as [string, ...string[]]),
+  role: z.enum(ALL_ROLES as [string, ...string[]]),
 });
 
 type UserFormValues = z.infer<typeof userFormSchema>;
 
 export default function AddUserPage() {
   const router = useRouter();
+  const { user: currentUser } = useAuth();
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     setHydrated(true);
   }, []);
+
+  const availableRoles = currentUser?.role === "Manager"
+      ? ["Volunteer", "Intern", "Donor"]
+      : ALL_ROLES;
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(userFormSchema),
@@ -78,7 +84,7 @@ export default function AddUserPage() {
     router.push("/users");
   };
 
-  if (!hydrated) {
+  if (!hydrated || !currentUser) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -136,7 +142,7 @@ export default function AddUserPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {ROLES.map((role) => (
+                        {availableRoles.map((role) => (
                           <SelectItem key={role} value={role}>
                             {role}
                           </SelectItem>
