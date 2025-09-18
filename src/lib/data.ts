@@ -15,10 +15,10 @@ export const allMockUsers: User[] = [
 ];
 
 export const mockProjects: Project[] = [
-  { id: "proj-01", name: "Clean Water Initiative", description: "Providing clean and safe drinking water to rural communities.", imageUrl: "https://picsum.photos/seed/water/600/400", status: "Ongoing", progress: 75 },
-  { id: "proj-02", name: "Education for All", description: "Building schools and providing educational materials for underprivileged children.", imageUrl: "https://picsum.photos/seed/education/600/400", status: "Ongoing", progress: 50 },
-  { id: "proj-03", name: "Healthcare Access", description: "Setting up mobile clinics to offer free healthcare services.", imageUrl: "https://picsum.photos/seed/health/600/400", status: "Completed", progress: 100 },
-  { id: "proj-04", name: "Women Empowerment Program", description: "Skill development workshops for women.", imageUrl: "https://picsum.photos/seed/women/600/400", status: "Planning", progress: 10 },
+  { id: "proj-01", name: "Clean Water Initiative", description: "Providing clean and safe drinking water to rural communities.", imageUrl: "https://picsum.photos/seed/water/600/400", status: "Ongoing", progress: 75, budget: 50000 },
+  { id: "proj-02", name: "Education for All", description: "Building schools and providing educational materials for underprivileged children.", imageUrl: "https://picsum.photos/seed/education/600/400", status: "Ongoing", progress: 50, budget: 25000 },
+  { id: "proj-03", name: "Healthcare Access", description: "Setting up mobile clinics to offer free healthcare services.", imageUrl: "https://picsum.photos/seed/health/600/400", status: "Completed", progress: 100, budget: 15000 },
+  { id: "proj-04", name: "Women Empowerment Program", description: "Skill development workshops for women.", imageUrl: "https://picsum.photos/seed/women/600/400", status: "Planning", progress: 10, budget: 30000 },
 ];
 
 export const mockDonations: Donation[] = [

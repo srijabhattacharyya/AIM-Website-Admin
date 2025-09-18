@@ -1,8 +1,8 @@
-
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { DollarSign, Briefcase, Users, Heart, IndianRupee } from "lucide-react";
 import { DonationCharts } from "@/components/charts";
 import { mockDonations, mockProjects, allMockUsers } from "@/lib/data";
+import { Progress } from "@/components/ui/progress";
 
 export default function AdminDashboard() {
   const totalDonationsINR = mockDonations
@@ -16,8 +16,24 @@ export default function AdminDashboard() {
   const totalBeneficiaries = 12500; // Mock data
   const totalVolunteers = allMockUsers.filter(u => u.role === 'Volunteer').length;
 
+  const projectDonationProgress = mockProjects.map(project => {
+    const donations = mockDonations.filter(d => d.project === project.name);
+    const totalDonated = donations.reduce((acc, d) => {
+      // Normalize USD to INR for progress calculation
+      const amountInINR = d.currency === 'USD' ? d.amount * 80 : d.amount;
+      return acc + amountInINR;
+    }, 0);
+    const budget = project.budget || 0;
+    const progress = budget > 0 ? (totalDonated / budget) * 100 : 0;
+    return {
+      ...project,
+      totalDonated,
+      progress,
+    };
+  });
+
   const stats = [
-    { title: "Donations (INR)", value: totalDonationsINR.toLocaleString('en-IN'), icon: <IndianRupee className="h-6 w-6 text-muted-foreground" />, currencyIcon: <IndianRupee className="h-6 w-6" /> },
+    { title: "Donations (INR)", value: <><IndianRupee className="h-6 w-6 mr-1" />{totalDonationsINR.toLocaleString('en-IN')}</>, icon: <IndianRupee className="h-6 w-6 text-muted-foreground" /> },
     { title: "Donations (USD)", value: `$${totalDonationsUSD.toLocaleString()}`, icon: <DollarSign className="h-6 w-6 text-muted-foreground" /> },
     { title: "Active Projects", value: totalProjects.toLocaleString(), icon: <Briefcase className="h-6 w-6 text-muted-foreground" /> },
     { title: "Beneficiaries Reached", value: totalBeneficiaries.toLocaleString(), icon: <Heart className="h-6 w-6 text-muted-foreground" /> },
@@ -35,13 +51,33 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold flex items-center">
-                {stat.currencyIcon}
                 {stat.value}
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Project Fundraising Progress</CardTitle>
+          <CardDescription>Donations received against project budgets (in INR).</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {projectDonationProgress.map((project) => (
+              <div key={project.id} className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="font-medium">{project.name}</span>
+                  <span className="text-sm text-muted-foreground">
+                    ₹{project.totalDonated.toLocaleString('en-IN')} / ₹{(project.budget || 0).toLocaleString('en-IN')}
+                  </span>
+                </div>
+                <Progress value={project.progress} />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
       <DonationCharts />
     </div>
   );

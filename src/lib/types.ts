@@ -15,6 +15,7 @@ export type Project = {
   imageUrl: string;
   status: "Ongoing" | "Completed" | "Planning";
   progress?: number;
+  budget?: number;
 };
 
 export type Donation = {
