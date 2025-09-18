@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { mockProjects } from "@/lib/data";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2, Pencil } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/use-auth";
 import Link from "next/link";
@@ -61,7 +61,7 @@ export default function ProjectsPage() {
     const updatedProjects = projects.filter(p => p.id !== projectId);
     setProjects(updatedProjects);
     localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(updatedProjects));
-    // Dispatch event to notify other components if necessary, though not needed for same-page delete
+    // Dispatch event to notify other components if necessary
     window.dispatchEvent(new Event("projects-updated"));
   };
 
@@ -120,10 +120,18 @@ export default function ProjectsPage() {
             <CardFooter className="flex justify-between items-center">
               <Badge variant={getBadgeVariant(project.status) as any}>{project.status}</Badge>
               {(user?.role === 'Admin' || user?.role === 'Manager') && (
-                <Button variant="destructive" size="icon" onClick={() => handleDelete(project.id)}>
-                  <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">Delete project</span>
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="icon" asChild>
+                    <Link href={`/projects/edit/${project.id}`}>
+                      <Pencil className="h-4 w-4" />
+                      <span className="sr-only">Edit project</span>
+                    </Link>
+                  </Button>
+                  <Button variant="destructive" size="icon" onClick={() => handleDelete(project.id)}>
+                    <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Delete project</span>
+                  </Button>
+                </div>
               )}
             </CardFooter>
           </Card>
