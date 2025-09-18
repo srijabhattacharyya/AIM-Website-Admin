@@ -26,10 +26,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
+const initiatives = [
+  "Educational Initiatives",
+  "Healthcare Initiatives",
+  "Gender Equality Initiatives",
+  "Childcare Initiatives",
+  "Sustainability Initiatives",
+  "Relief to the Underprivileged",
+  "Disaster Management",
+  "Ignite Change Initiatives",
+] as const;
+
 const projectFormSchema = z.object({
   name: z.string().min(2, {
     message: "Project name must be at least 2 characters.",
   }),
+  initiative: z.enum(initiatives),
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
   }),
@@ -49,7 +61,8 @@ export default function AddProjectPage() {
             name: "",
             description: "",
             status: "Planning",
-            imageUrl: "https://picsum.photos/seed/newproject/600/400"
+            imageUrl: "https://picsum.photos/seed/newproject/600/400",
+            initiative: "Educational Initiatives",
         }
     });
 
@@ -78,13 +91,35 @@ export default function AddProjectPage() {
                         name="name"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Project Name</FormLabel>
+                            <FormLabel>Initiative Project Name</FormLabel>
                             <FormControl>
                                 <Input placeholder="e.g. Community Health Camp" {...field} />
                             </FormControl>
                             <FormMessage />
                             </FormItem>
                         )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="initiative"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Initiative</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select an initiative" />
+                                    </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                    {initiatives.map(initiative => (
+                                        <SelectItem key={initiative} value={initiative}>{initiative}</SelectItem>
+                                    ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                                </FormItem>
+                            )}
                         />
                         <FormField
                         control={form.control}
