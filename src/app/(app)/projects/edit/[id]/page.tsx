@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,133 +25,144 @@ import {
 } from "@/components/ui/select";
 import {
   Card,
-  CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardContent,
 } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter, useParams } from "next/navigation";
 import { initiatives, type Project } from "@/lib/types";
 import { Loader2 } from "lucide-react";
 
+const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
+
+// ✅ Validation Schema
 const projectFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Project name must be at least 2 characters.",
-  }),
+  name: z.string().min(2, { message: "Project name must be at least 2 characters." }),
   initiative: z.enum([...initiatives] as [string, ...string[]]),
-  description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
-  }),
+  description: z.string().min(10, { message: "Description must be at least 10 characters." }),
   status: z.enum(["Planning", "Ongoing", "Completed"]),
-  imageUrl: z.string().url({ message: "Please enter a valid URL." }),
+  imageUrl: z
+    .string()
+    .url({ message: "Please enter a valid image URL." })
+    .or(z.string().length(0)),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 export default function EditProjectPage() {
-  const { toast } = useToast();
   const router = useRouter();
   const params = useParams();
-  const projectId = params.id as string;
+  const projectId = params?.id as string;
+
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
       name: "",
+      initiative: initiatives[0],
       description: "",
       status: "Planning",
       imageUrl: "",
-      initiative: initiatives[0],
     },
   });
 
+  // ✅ Hydration + Load Project
   useEffect(() => {
-    if (projectId) {
-      const storedProjectsString = localStorage.getItem("aim-foundation-projects");
-      if (storedProjectsString) {
-        const storedProjects: Project[] = JSON.parse(storedProjectsString);
-        const projectToEdit = storedProjects.find(p => p.id === projectId);
-        if (projectToEdit) {
-          form.reset(projectToEdit);
-        } else {
-          toast({ variant: "destructive", title: "Error", description: "Project not found." });
-          router.push("/projects");
-        }
-      }
-    }
-  }, [projectId, form, router, toast]);
+    if (!projectId) return;
 
-  function onSubmit(data: ProjectFormValues) {
-    const storedProjectsString = localStorage.getItem("aim-foundation-projects");
+    const storedProjectsString = localStorage.getItem(PROJECTS_STORAGE_KEY);
+    if (storedProjectsString) {
+        const storedProjects: Project[] = JSON.parse(storedProjectsString);
+        const found = storedProjects.find((p) => p.id === projectId);
+        if (found) {
+            setProject(found);
+            form.reset({
+                name: found.name,
+                initiative: found.initiative,
+                description: found.description,
+                status: found.status,
+                imageUrl: found.imageUrl || "",
+            });
+        }
+    }
+    setLoading(false);
+  }, [projectId, form]);
+
+
+  const onSubmit = (data: ProjectFormValues) => {
+    const storedProjectsString = localStorage.getItem(PROJECTS_STORAGE_KEY);
     const storedProjects: Project[] = storedProjectsString ? JSON.parse(storedProjectsString) : [];
-    
-    const updatedProjects = storedProjects.map(p => 
-      p.id === projectId ? { ...p, ...data } : p
+
+    const updatedProjects = storedProjects.map((p) =>
+      p.id === projectId
+        ? {
+            ...p,
+            ...data,
+            imageUrl: data.imageUrl || `https://picsum.photos/seed/${data.name}/400/200`,
+          }
+        : p
     );
 
-    localStorage.setItem("aim-foundation-projects", JSON.stringify(updatedProjects));
+    // ✅ Save
+    localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(updatedProjects));
 
-    // Dispatch custom event so ProjectsPage refreshes
+    // ✅ Sync other pages
     window.dispatchEvent(new Event("projects-updated"));
 
-    toast({
-      title: "Project Updated",
-      description: `The project "${data.name}" has been successfully updated.`,
-    });
+    // ✅ Redirect
     router.push("/projects");
+  };
+
+  if (loading) {
+    return (
+        <div className="flex h-screen items-center justify-center">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+    );
   }
 
-  if (!form.formState.isDirty) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    )
+  if (!project) {
+    return <p className="text-center text-destructive">Project not found.</p>;
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-2xl mx-auto">
       <h1 className="font-headline text-3xl font-bold tracking-tight">
         Edit Project
       </h1>
       <Card>
         <CardHeader>
-          <CardTitle>Project Details</CardTitle>
-          <CardDescription>
-            Update the form below to edit the project.
-          </CardDescription>
+          <CardTitle>Update Project Details</CardTitle>
+          <CardDescription>Modify the fields below to update your project.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Project Name */}
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Initiative Project Name</FormLabel>
+                    <FormLabel>Project Name</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="e.g. Community Health Camp"
-                        {...field}
-                      />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
+              {/* Initiative */}
               <FormField
                 control={form.control}
                 name="initiative"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Initiative</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select an initiative" />
@@ -170,6 +181,7 @@ export default function EditProjectPage() {
                 )}
               />
 
+              {/* Description */}
               <FormField
                 control={form.control}
                 name="description"
@@ -177,55 +189,21 @@ export default function EditProjectPage() {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="A brief description of the project goals and activities."
-                        {...field}
-                      />
+                      <Textarea {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="https://example.com/image.jpg"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      You can use a placeholder from{" "}
-                      <a
-                        href="https://picsum.photos/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline"
-                      >
-                        picsum.photos
-                      </a>
-                      .
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
+              {/* Status */}
               <FormField
                 control={form.control}
                 name="status"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select project status" />
@@ -242,7 +220,24 @@ export default function EditProjectPage() {
                 )}
               />
 
-              <Button type="submit">Save Changes</Button>
+              {/* Image URL */}
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image URL (Optional)</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="w-full">
+                Update Project
+              </Button>
             </form>
           </Form>
         </CardContent>
