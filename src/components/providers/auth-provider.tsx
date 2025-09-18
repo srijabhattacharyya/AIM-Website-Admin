@@ -22,17 +22,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    // try {
-    //   const storedUser = localStorage.getItem("ngo-hub-user");
-    //   if (storedUser) {
-    //     setUser(JSON.parse(storedUser));
-    //   }
-    // } catch (error) {
-    //   console.error("Failed to parse user from localStorage", error);
-    //   localStorage.removeItem("ngo-hub-user");
-    // }
-    // setLoading(false);
-    setUser(mockUsers.Admin);
+    try {
+      const storedUser = localStorage.getItem("ngo-hub-user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Failed to parse user from localStorage", error);
+      localStorage.removeItem("ngo-hub-user");
+    }
     setLoading(false);
   }, []);
 
@@ -59,11 +57,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [handleAuth]);
 
   const logout = useCallback(async () => {
-    // setUser(null);
-    // localStorage.removeItem("ngo-hub-user");
-    // router.push("/login");
-    console.log("Logout disabled in dev mode");
-  }, []);
+    setUser(null);
+    localStorage.removeItem("ngo-hub-user");
+    router.push("/login");
+  }, [router]);
 
   const setRole = useCallback((role: Role) => {
     if (user) {
