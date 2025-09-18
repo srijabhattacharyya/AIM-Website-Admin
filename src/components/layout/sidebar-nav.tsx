@@ -75,7 +75,7 @@ export function SidebarNav({ role }: { role: Role }) {
       <SidebarMenu className="flex-1 p-4">
         {navItems.map((item) => (
           <SidebarMenuItem key={item.href}>
-            <Link href={item.href} passHref legacyBehavior>
+            <Link href={item.href}>
               <SidebarMenuButton
                 isActive={pathname === item.href}
                 tooltip={item.label}
