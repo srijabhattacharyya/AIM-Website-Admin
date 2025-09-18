@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { mockDonations } from "@/lib/data";
-import { Download, Search } from "lucide-react";
+import { Download, IndianRupee, Search } from "lucide-react";
 
 export default function DonationsPage() {
   return (
@@ -42,7 +42,14 @@ export default function DonationsPage() {
                     <TableCell className="font-medium">{donation.donorName}</TableCell>
                     <TableCell>{donation.donorEmail}</TableCell>
                     <TableCell>
-                      {donation.currency === "INR" ? `₹${donation.amount.toLocaleString('en-IN')}` : `$${donation.amount.toLocaleString()}`}
+                      {donation.currency === "INR" ? (
+                        <span className="inline-flex items-center">
+                          <IndianRupee className="h-4 w-4 mr-1" />
+                          {donation.amount.toLocaleString('en-IN')}
+                        </span>
+                      ) : (
+                        `$${donation.amount.toLocaleString()}`
+                      )}
                     </TableCell>
                     <TableCell>{new Date(donation.date).toLocaleDateString()}</TableCell>
                     <TableCell>{donation.project}</TableCell>

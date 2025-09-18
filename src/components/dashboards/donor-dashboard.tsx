@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { mockDonations, mockProjects } from "@/lib/data";
-import { Download, Gift, MessageSquareHeart } from "lucide-react";
+import { Download, Gift, IndianRupee, MessageSquareHeart } from "lucide-react";
 
 export default function DonorDashboard() {
   // Assuming the logged-in donor is "Morgan Brown"
@@ -39,7 +39,14 @@ export default function DonorDashboard() {
                   <TableCell>{new Date(donation.date).toLocaleDateString()}</TableCell>
                   <TableCell>{donation.project}</TableCell>
                   <TableCell className="font-medium">
-                    {donation.currency === 'INR' ? `₹${donation.amount.toLocaleString('en-IN')}` : `$${donation.amount.toLocaleString()}`}
+                    {donation.currency === 'INR' ? (
+                      <span className="inline-flex items-center">
+                        <IndianRupee className="h-4 w-4 mr-1" />
+                        {donation.amount.toLocaleString('en-IN')}
+                      </span>
+                    ) : (
+                      `$${donation.amount.toLocaleString()}`
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
                     {donation.receiptUrl ? (
