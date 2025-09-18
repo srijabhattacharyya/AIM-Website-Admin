@@ -23,6 +23,7 @@ import {
   LayoutGrid,
   Handshake,
   FileText,
+  Image as ImageIcon,
 } from "lucide-react";
 import type { Role } from "@/lib/types";
 import { Separator } from "../ui/separator";
@@ -33,24 +34,24 @@ const navItemsByRole: Record<Role, { href: string; icon: React.ReactNode; label:
     { href: "/donations", icon: <DollarSign />, label: "Donations" },
     { href: "/projects", icon: <Briefcase />, label: "Projects" },
     { href: "/users", icon: <Users />, label: "Users" },
-    { href: "/uploads", icon: <Upload />, label: "Uploads" },
+    { href: "/uploads", icon: <ImageIcon />, label: "Photo Library" },
     { href: "/settings", icon: <Settings />, label: "Settings" },
   ],
   Manager: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
     { href: "/donations", icon: <DollarSign />, label: "Donations" },
     { href: "/projects", icon: <Briefcase />, label: "Projects" },
-    { href: "/uploads", icon: <Upload />, label: "Uploads" },
+    { href: "/uploads", icon: <ImageIcon />, label: "Photo Library" },
   ],
   Volunteer: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
     { href: "/projects", icon: <Briefcase />, label: "Projects" },
-    { href: "/uploads", icon: <Upload />, label: "Uploads" },
+    { href: "/uploads", icon: <ImageIcon />, label: "Photo Library" },
   ],
   Intern: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
     { href: "/projects", icon: <Briefcase />, label: "Projects" },
-    { href: "/uploads", icon: <Upload />, label: "Uploads" },
+    { href: "/uploads", icon: <ImageIcon />, label: "Photo Library" },
   ],
   Donor: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },

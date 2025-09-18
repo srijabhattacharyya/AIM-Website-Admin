@@ -1,15 +1,49 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { mockUploads } from "@/lib/data";
-import { Upload as UploadIcon, Trash2 } from "lucide-react";
+import { Upload as UploadIcon, Trash2, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useAuth } from "@/hooks/use-auth";
+import type { User } from "@/lib/types";
 
 export default function UploadsPage() {
+  const { user: authUser } = useAuth();
+  const [hydrated, setHydrated] = useState(false);
+
+  // Temporary user for development
+  const devUser: User = {
+    id: "user-admin-dev",
+    name: "Dev Admin",
+    email: "dev@example.com",
+    avatarUrl: "https://picsum.photos/seed/dev/100/100",
+    role: "Admin",
+    status: "Active"
+  };
+
+  const user = authUser || devUser;
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  const canManageUploads = user?.role === "Admin" || user?.role === "Manager";
+
+  if (!hydrated) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <h1 className="font-headline text-3xl font-bold tracking-tight">File Uploads</h1>
+      <h1 className="font-headline text-3xl font-bold tracking-tight">Photo Library</h1>
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <Card>
@@ -28,11 +62,13 @@ export default function UploadsPage() {
                     className="rounded-lg object-cover"
                     data-ai-hint="event file"
                   />
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="destructive" size="icon">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  {canManageUploads && (
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="destructive" size="icon">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ))}
             </CardContent>
