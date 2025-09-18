@@ -25,7 +25,7 @@ export default function ProjectsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="font-headline text-3xl font-bold tracking-tight">Projects</h1>
-        {user?.role === 'Admin' && (
+        {(user?.role === 'Admin' || user?.role === 'Manager') && (
           <Button asChild>
             <Link href="/projects/add">
               <PlusCircle className="mr-2 h-4 w-4" />
@@ -48,7 +48,7 @@ export default function ProjectsPage() {
             </CardContent>
             <CardFooter className="flex justify-between items-center">
               <Badge variant={getBadgeVariant(project.status) as any}>{project.status}</Badge>
-              {user?.role === 'Admin' && (
+              {(user?.role === 'Admin' || user?.role === 'Manager') && (
                 <Button variant="destructive" size="icon">
                   <Trash2 className="h-4 w-4" />
                   <span className="sr-only">Delete project</span>
