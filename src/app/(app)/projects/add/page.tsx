@@ -76,6 +76,9 @@ export default function AddProjectPage() {
     const updatedProjects = [...storedProjects, newProject];
     localStorage.setItem("aim-foundation-projects", JSON.stringify(updatedProjects));
 
+    // Dispatch custom event so ProjectsPage refreshes
+    window.dispatchEvent(new Event("projects-updated"));
+
     toast({
       title: "Project Created",
       description: `The project "${data.name}" has been successfully created.`,

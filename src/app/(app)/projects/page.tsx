@@ -46,16 +46,14 @@ export default function ProjectsPage() {
     
     loadProjects();
 
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === PROJECTS_STORAGE_KEY) {
+    const handleStorageChange = () => {
         loadProjects();
-      }
     };
 
-    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("projects-updated", handleStorageChange);
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("projects-updated", handleStorageChange);
     };
   }, []);
 
@@ -63,6 +61,8 @@ export default function ProjectsPage() {
     const updatedProjects = projects.filter(p => p.id !== projectId);
     setProjects(updatedProjects);
     localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(updatedProjects));
+    // Dispatch event to notify other components if necessary, though not needed for same-page delete
+    window.dispatchEvent(new Event("projects-updated"));
   };
 
   const getBadgeVariant = (status: string) => {
