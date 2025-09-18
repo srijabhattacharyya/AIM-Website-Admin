@@ -59,7 +59,7 @@ const navItemsByRole: Record<Role, { href: string; icon: React.ReactNode; label:
 
 const Logo = () => (
     <div className="flex items-center gap-2 p-4">
-        <Image src="/images/logo.png" alt="AIM Foundation Logo" width={32} height={32} />
+        <Image src="https://picsum.photos/seed/logo/32/32" alt="AIM Foundation Logo" width={32} height={32} className="rounded-sm" />
         <h1 className="text-xl font-bold text-sidebar-foreground">AIM Foundation</h1>
     </div>
 )
