@@ -1,7 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { mockProjects } from "@/lib/data";
@@ -102,7 +109,7 @@ export default function ProjectsPage() {
           <Card key={project.id} className="flex flex-col">
             <CardHeader>
               <div className="relative h-40 w-full mb-4">
-                  <Image src={project.imageUrl} alt={project.name} fill={true} objectFit="cover" className="rounded-t-lg" data-ai-hint="community project" />
+                  <Image src={project.imageUrl} alt={project.name} fill={true} style={{objectFit: 'cover'}} className="rounded-t-lg" data-ai-hint="community project" />
               </div>
               <CardTitle>{project.name}</CardTitle>
                <CardDescription>{project.initiative}</CardDescription>

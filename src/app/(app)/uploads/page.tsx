@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { mockUploads } from "@/lib/data";
-import { Upload as UploadIcon } from "lucide-react";
+import { Upload as UploadIcon, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 export default function UploadsPage() {
@@ -19,7 +19,7 @@ export default function UploadsPage() {
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {mockUploads.map(upload => (
-                <div key={upload.id} className="aspect-w-1 aspect-h-1">
+                <div key={upload.id} className="group relative aspect-w-1 aspect-h-1">
                   <Image 
                     src={upload.url} 
                     alt={upload.name} 
@@ -28,6 +28,11 @@ export default function UploadsPage() {
                     className="rounded-lg object-cover"
                     data-ai-hint="event file"
                   />
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="destructive" size="icon">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               ))}
             </CardContent>
