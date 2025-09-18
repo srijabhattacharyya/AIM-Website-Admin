@@ -35,7 +35,7 @@ export default function AdminDashboard() {
   });
 
   const stats = [
-    { title: "Donations (INR)", value: <><IndianRupee className="h-6 w-6 mr-1" />{totalDonationsINR.toLocaleString('en-IN')}</>, icon: <IndianRupee className="h-6 w-6 text-muted-foreground" /> },
+    { title: "Donations (INR)", value: <div className="flex items-center"><IndianRupee className="h-6 w-6 mr-1" />{totalDonationsINR.toLocaleString('en-IN')}</div>, icon: <IndianRupee className="h-6 w-6 text-muted-foreground" /> },
     { title: "Donations (USD)", value: `$${totalDonationsUSD.toLocaleString()}`, icon: <DollarSign className="h-6 w-6 text-muted-foreground" /> },
     { title: "Active Projects", value: totalProjects.toLocaleString(), icon: <Briefcase className="h-6 w-6 text-muted-foreground" /> },
     { title: "Beneficiaries Reached", value: totalBeneficiaries.toLocaleString(), icon: <Heart className="h-6 w-6 text-muted-foreground" /> },
@@ -70,9 +70,17 @@ export default function AdminDashboard() {
               <div key={project.id} className="space-y-2">
                 <div className="flex justify-between">
                   <span className="font-medium">{project.name}</span>
-                  <span className="text-sm text-muted-foreground flex items-center">
-                    <IndianRupee className="h-4 w-4 mr-1" />{project.totalDonated.toLocaleString('en-IN')} / <IndianRupee className="h-4 w-4 mr-1" />{(project.budget || 0).toLocaleString('en-IN')}
-                  </span>
+                  <div className="text-sm flex items-center">
+                    <span className="flex items-center text-primary font-semibold">
+                      <IndianRupee className="h-4 w-4 mr-1" />
+                      {project.totalDonated.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-muted-foreground mx-1">/</span>
+                    <span className="flex items-center text-foreground font-semibold">
+                      <IndianRupee className="h-4 w-4 mr-1" />
+                      {(project.budget || 0).toLocaleString('en-IN')}
+                    </span>
+                  </div>
                 </div>
                 <Progress value={project.progress} />
               </div>
