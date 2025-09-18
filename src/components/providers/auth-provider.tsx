@@ -22,15 +22,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("ngo-hub-user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    } catch (error) {
-      console.error("Failed to parse user from localStorage", error);
-      localStorage.removeItem("ngo-hub-user");
-    }
+    // DEV MODE: Bypass login and set a default user.
+    const devUser = mockUsers.Admin;
+    setUser(devUser);
+    localStorage.setItem("ngo-hub-user", JSON.stringify(devUser));
     setLoading(false);
   }, []);
 
@@ -43,38 +38,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   const login = useCallback(async (email: string, pass: string) => {
     setLoading(true);
-    // This is mock logic. In a real app, you'd verify credentials.
-    // Here we default to Admin or find a user by email if needed.
     const loggedInUser = mockUsers.Admin;
     handleAuth(loggedInUser);
   }, [handleAuth]);
 
   const googleLogin = useCallback(async () => {
     setLoading(true);
-    // Mock Google login, defaults to Donor role for variety
     const loggedInUser = mockUsers.Donor;
     handleAuth(loggedInUser);
   }, [handleAuth]);
 
   const logout = useCallback(async () => {
-    setUser(null);
-    localStorage.removeItem("ngo-hub-user");
-    router.push("/login");
+    // In dev mode, logout will just re-set the default user.
+    const devUser = mockUsers.Admin;
+    setUser(devUser);
+    localStorage.setItem("ngo-hub-user", JSON.stringify(devUser));
+    router.push("/login"); // Still go to login for visual consistency, but app is not protected
   }, [router]);
 
   const setRole = useCallback((role: Role) => {
-    if (user) {
-      const newUser = mockUsers[role];
-      setUser(newUser);
-      localStorage.setItem("ngo-hub-user", JSON.stringify(newUser));
-    }
-  }, [user]);
+    const newUser = mockUsers[role];
+    setUser(newUser);
+    localStorage.setItem("ngo-hub-user", JSON.stringify(newUser));
+  }, []);
 
   const value = { user, loading, login, googleLogin, logout, setRole };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }
