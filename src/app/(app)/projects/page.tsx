@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,11 +16,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { initiatives, type Initiative } from "@/lib/types";
+import { initiatives, type Initiative, type Project } from "@/lib/types";
 
 export default function ProjectsPage() {
   const { user } = useAuth();
+  const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [selectedInitiative, setSelectedInitiative] = useState<Initiative | "all">("all");
+
+  useEffect(() => {
+    const storedProjects = localStorage.getItem("aim-foundation-projects");
+    if (storedProjects) {
+      setProjects(JSON.parse(storedProjects));
+    } else {
+      localStorage.setItem("aim-foundation-projects", JSON.stringify(mockProjects));
+    }
+  }, []);
+
+  const handleDelete = (projectId: string) => {
+    const updatedProjects = projects.filter(p => p.id !== projectId);
+    setProjects(updatedProjects);
+    localStorage.setItem("aim-foundation-projects", JSON.stringify(updatedProjects));
+  };
 
   const getBadgeVariant = (status: string) => {
     switch (status) {
@@ -32,8 +48,8 @@ export default function ProjectsPage() {
   };
   
   const filteredProjects = selectedInitiative === "all" 
-    ? mockProjects 
-    : mockProjects.filter(p => p.initiative === selectedInitiative);
+    ? projects 
+    : projects.filter(p => p.initiative === selectedInitiative);
 
   return (
     <div className="space-y-6">
@@ -77,7 +93,7 @@ export default function ProjectsPage() {
             <CardFooter className="flex justify-between items-center">
               <Badge variant={getBadgeVariant(project.status) as any}>{project.status}</Badge>
               {(user?.role === 'Admin' || user?.role === 'Manager') && (
-                <Button variant="destructive" size="icon">
+                <Button variant="destructive" size="icon" onClick={() => handleDelete(project.id)}>
                   <Trash2 className="h-4 w-4" />
                   <span className="sr-only">Delete project</span>
                 </Button>

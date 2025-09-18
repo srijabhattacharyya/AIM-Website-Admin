@@ -31,7 +31,8 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { initiatives } from "@/lib/types";
+import { initiatives, type Project } from "@/lib/types";
+import { mockProjects } from "@/lib/data";
 
 const projectFormSchema = z.object({
   name: z.string().min(2, {
@@ -63,7 +64,19 @@ export default function AddProjectPage() {
   });
 
   function onSubmit(data: ProjectFormValues) {
-    console.log(data);
+    const storedProjects = localStorage.getItem("aim-foundation-projects");
+    const projects = storedProjects ? JSON.parse(storedProjects) : mockProjects;
+    
+    const newProject: Project = {
+      id: `proj-${Date.now()}`,
+      ...data,
+      progress: 0,
+      budget: 0,
+    };
+
+    const updatedProjects = [...projects, newProject];
+    localStorage.setItem("aim-foundation-projects", JSON.stringify(updatedProjects));
+
     toast({
       title: "Project Created",
       description: `The project "${data.name}" has been successfully created.`,
