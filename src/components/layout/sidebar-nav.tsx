@@ -44,10 +44,12 @@ const navItemsByRole: Record<Role, { href: string; icon: React.ReactNode; label:
   ],
   Volunteer: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
+    { href: "/projects", icon: <Briefcase />, label: "Projects" },
     { href: "/uploads", icon: <Upload />, label: "Uploads" },
   ],
   Intern: [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
+    { href: "/projects", icon: <Briefcase />, label: "Projects" },
     { href: "/uploads", icon: <Upload />, label: "Uploads" },
   ],
   Donor: [
