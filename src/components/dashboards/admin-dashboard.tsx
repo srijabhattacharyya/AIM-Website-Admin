@@ -17,7 +17,7 @@ export default function AdminDashboard() {
   const totalVolunteers = allMockUsers.filter(u => u.role === 'Volunteer').length;
 
   const stats = [
-    { title: "Donations (INR)", value: `₹${totalDonationsINR.toLocaleString('en-IN')}`, icon: <IndianRupee className="h-6 w-6 text-muted-foreground" /> },
+    { title: "Donations (INR)", value: totalDonationsINR.toLocaleString('en-IN'), icon: <IndianRupee className="h-6 w-6 text-muted-foreground" />, currencyIcon: <IndianRupee className="h-6 w-6" /> },
     { title: "Donations (USD)", value: `$${totalDonationsUSD.toLocaleString()}`, icon: <DollarSign className="h-6 w-6 text-muted-foreground" /> },
     { title: "Active Projects", value: totalProjects.toLocaleString(), icon: <Briefcase className="h-6 w-6 text-muted-foreground" /> },
     { title: "Beneficiaries Reached", value: totalBeneficiaries.toLocaleString(), icon: <Heart className="h-6 w-6 text-muted-foreground" /> },
@@ -34,7 +34,10 @@ export default function AdminDashboard() {
               {stat.icon}
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className="text-2xl font-bold flex items-center">
+                {stat.currencyIcon}
+                {stat.value}
+              </div>
             </CardContent>
           </Card>
         ))}
