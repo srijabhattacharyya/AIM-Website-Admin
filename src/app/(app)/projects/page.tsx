@@ -24,14 +24,12 @@ export default function ProjectsPage() {
   const [selectedInitiative, setSelectedInitiative] = useState<Initiative | "all">("all");
 
   useEffect(() => {
-    // Correctly initialize projects from localStorage or mock data
     const storedProjects = localStorage.getItem("aim-foundation-projects");
-    const initialProjects = storedProjects ? JSON.parse(storedProjects) : mockProjects;
-    setProjects(initialProjects);
-    
-    // If localStorage is empty, populate it with mock data
-    if (!storedProjects) {
-        localStorage.setItem("aim-foundation-projects", JSON.stringify(mockProjects));
+    if (storedProjects) {
+      setProjects(JSON.parse(storedProjects));
+    } else {
+      setProjects(mockProjects);
+      localStorage.setItem("aim-foundation-projects", JSON.stringify(mockProjects));
     }
   }, []);
 
