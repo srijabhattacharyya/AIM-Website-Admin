@@ -25,17 +25,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-
-const initiatives = [
-  "Educational Initiatives",
-  "Healthcare Initiatives",
-  "Gender Equality Initiatives",
-  "Childcare Initiatives",
-  "Sustainability Initiatives",
-  "Relief to the Underprivileged",
-  "Disaster Management",
-  "Ignite Change Initiatives",
-] as const;
+import { initiatives } from "@/lib/types";
 
 const projectFormSchema = z.object({
   name: z.string().min(2, {
@@ -163,7 +153,7 @@ export default function AddProjectPage() {
                                     <FormControl>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select project status" />
-                                    </SelectTrigger>
+                                    </Trigger>
                                     </FormControl>
                                     <SelectContent>
                                     <SelectItem value="Planning">Planning</SelectItem>

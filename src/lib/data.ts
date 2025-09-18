@@ -1,4 +1,5 @@
-import type { User, Role, Project, Donation, Task, Upload } from './types';
+import type { User, Role, Project, Donation, Task, Upload, Initiative } from './types';
+import { initiatives } from './types';
 
 export const mockUsers: Record<Role, User> = {
   Admin: { id: "user-admin-01", name: "Alex Ray", email: "alex.ray@example.com", avatarUrl: "https://picsum.photos/seed/alex/100/100", role: "Admin" },
@@ -15,10 +16,10 @@ export const allMockUsers: User[] = [
 ];
 
 export const mockProjects: Project[] = [
-  { id: "proj-01", name: "Clean Water Initiative", description: "Providing clean and safe drinking water to rural communities.", imageUrl: "https://picsum.photos/seed/water/600/400", status: "Ongoing", progress: 75, budget: 50000 },
-  { id: "proj-02", name: "Education for All", description: "Building schools and providing educational materials for underprivileged children.", imageUrl: "https://picsum.photos/seed/education/600/400", status: "Ongoing", progress: 50, budget: 25000 },
-  { id: "proj-03", name: "Healthcare Access", description: "Setting up mobile clinics to offer free healthcare services.", imageUrl: "https://picsum.photos/seed/health/600/400", status: "Completed", progress: 100, budget: 15000 },
-  { id: "proj-04", name: "Women Empowerment Program", description: "Skill development workshops for women.", imageUrl: "https://picsum.photos/seed/women/600/400", status: "Planning", progress: 10, budget: 30000 },
+  { id: "proj-01", name: "Clean Water Initiative", description: "Providing clean and safe drinking water to rural communities.", imageUrl: "https://picsum.photos/seed/water/600/400", status: "Ongoing", initiative: "Sustainability Initiatives", progress: 75, budget: 50000 },
+  { id: "proj-02", name: "Education for All", description: "Building schools and providing educational materials for underprivileged children.", imageUrl: "https://picsum.photos/seed/education/600/400", status: "Ongoing", initiative: "Educational Initiatives", progress: 50, budget: 25000 },
+  { id: "proj-03", name: "Healthcare Access", description: "Setting up mobile clinics to offer free healthcare services.", imageUrl: "https://picsum.photos/seed/health/600/400", status: "Completed", initiative: "Healthcare Initiatives", progress: 100, budget: 15000 },
+  { id: "proj-04", name: "Women Empowerment Program", description: "Skill development workshops for women.", imageUrl: "https://picsum.photos/seed/women/600/400", status: "Planning", initiative: "Gender Equality Initiatives", progress: 10, budget: 30000 },
 ];
 
 export const mockDonations: Donation[] = [

@@ -8,12 +8,26 @@ export type User = {
   role: Role;
 };
 
+export const initiatives = [
+  "Educational Initiatives",
+  "Healthcare Initiatives",
+  "Gender Equality Initiatives",
+  "Childcare Initiatives",
+  "Sustainability Initiatives",
+  "Relief to the Underprivileged",
+  "Disaster Management",
+  "Ignite Change Initiatives",
+] as const;
+
+export type Initiative = typeof initiatives[number];
+
 export type Project = {
   id: string;
   name: string;
   description: string;
   imageUrl: string;
   status: "Ongoing" | "Completed" | "Planning";
+  initiative: Initiative;
   progress?: number;
   budget?: number;
 };
