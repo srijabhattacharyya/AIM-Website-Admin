@@ -32,7 +32,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { initiatives, type Project } from "@/lib/types";
-import { mockProjects } from "@/lib/data";
 
 const projectFormSchema = z.object({
   name: z.string().min(2, {
@@ -64,8 +63,8 @@ export default function AddProjectPage() {
   });
 
   function onSubmit(data: ProjectFormValues) {
-    const storedProjects = localStorage.getItem("aim-foundation-projects");
-    const projects: Project[] = storedProjects ? JSON.parse(storedProjects) : mockProjects;
+    const storedProjectsString = localStorage.getItem("aim-foundation-projects");
+    const storedProjects: Project[] = storedProjectsString ? JSON.parse(storedProjectsString) : [];
     
     const newProject: Project = {
       id: `proj-${Date.now()}`,
@@ -74,7 +73,7 @@ export default function AddProjectPage() {
       budget: 0,
     };
 
-    const updatedProjects = [...projects, newProject];
+    const updatedProjects = [...storedProjects, newProject];
     localStorage.setItem("aim-foundation-projects", JSON.stringify(updatedProjects));
 
     toast({
