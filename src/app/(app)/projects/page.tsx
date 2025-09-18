@@ -35,6 +35,7 @@ export default function ProjectsPage() {
   useEffect(() => {
     const loadProjects = () => {
       const storedProjectsString = localStorage.getItem(PROJECTS_STORAGE_KEY);
+      
       if (storedProjectsString) {
         setProjects(JSON.parse(storedProjectsString));
       } else {
