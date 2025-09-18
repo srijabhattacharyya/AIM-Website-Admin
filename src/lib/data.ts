@@ -43,7 +43,7 @@ export const mockMedia: Media[] = [
   { id: "med-04", name: "Workshop Session", url: "https://picsum.photos/seed/media4/400/300", uploadedAt: "2023-11-10" },
 ];
 
-export const donationMonthlyTrend = [
+const rawMonthlyTrend = [
   { month: "Jan", INR: 40000, USD: 500 },
   { month: "Feb", INR: 30000, USD: 350 },
   { month: "Mar", INR: 50000, USD: 600 },
@@ -51,3 +51,8 @@ export const donationMonthlyTrend = [
   { month: "May", INR: 60000, USD: 700 },
   { month: "Jun", INR: 55000, USD: 650 },
 ];
+
+export const donationMonthlyTrend = rawMonthlyTrend.map(d => ({
+  ...d,
+  Total: d.INR + d.USD * 80
+}));

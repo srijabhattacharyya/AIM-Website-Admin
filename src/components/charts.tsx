@@ -14,6 +14,10 @@ const chartConfig = {
     label: "USD",
     color: "hsl(var(--accent))",
   },
+  Total: {
+    label: "Total (INR)",
+    color: "hsl(var(--secondary-foreground))",
+  }
 } satisfies ChartConfig
 
 export function DonationCharts() {
@@ -57,7 +61,9 @@ export function DonationCharts() {
               <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
               <YAxis tickFormatter={(value) => `₹${value / 1000}k`} />
               <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+              <Bar dataKey="Total" fill="var(--color-Total)" radius={4} />
               <Bar dataKey="INR" fill="var(--color-INR)" radius={4} />
+              <Bar dataKey="USD" fill="var(--color-USD)" radius={4} />
             </BarChart>
           </ChartContainer>
         </CardContent>
