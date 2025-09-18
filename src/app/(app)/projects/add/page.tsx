@@ -53,7 +53,7 @@ export default function AddProjectPage() {
             status: "Planning",
             imageUrl: "https://picsum.photos/seed/newproject/600/400",
             initiative: "Educational Initiatives",
-        }
+        },
     });
 
     function onSubmit(data: ProjectFormValues) {
