@@ -217,9 +217,9 @@ export default function UsersPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                       <Badge variant={user.status === 'Active' ? 'default' : 'destructive'}>
-                          {user.status}
-                        </Badge>
+                      <Badge variant={user.status === 'Active' ? 'default' : 'destructive'}>
+                        {user.status}
+                      </Badge>
                     </TableCell>
                     {canManageUsers && (
                       <TableCell className="text-right">
