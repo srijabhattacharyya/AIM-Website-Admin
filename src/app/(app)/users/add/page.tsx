@@ -50,7 +50,6 @@ export default function AddUserPage() {
   const { user: authUser } = useAuth();
   const [hydrated, setHydrated] = useState(false);
   
-  // Temporary user for development
   const devUser: User = {
     id: "user-admin-dev",
     name: "Dev Admin",
