@@ -204,34 +204,38 @@ export default function UsersPage() {
                     {canManageUsers && (
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                           <Button variant="outline" size="icon" asChild disabled={!canEditOrDelete(user)}>
-                              <Link href={`/users/edit/${user.id}`}>
-                                <Pencil className="h-4 w-4" />
-                                <span className="sr-only">Edit user</span>
-                              </Link>
-                            </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="icon" disabled={!canEditOrDelete(user)}>
-                                <Trash2 className="h-4 w-4" />
-                                <span className="sr-only">Delete user</span>
+                          {canEditOrDelete(user) ? (
+                            <>
+                              <Button variant="outline" size="icon" asChild>
+                                <Link href={`/users/edit/${user.id}`}>
+                                  <Pencil className="h-4 w-4" />
+                                  <span className="sr-only">Edit user</span>
+                                </Link>
                               </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action cannot be undone. This will permanently delete the user account.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(user.id)}>
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="destructive" size="icon">
+                                    <Trash2 className="h-4 w-4" />
+                                    <span className="sr-only">Delete user</span>
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This action cannot be undone. This will permanently delete the user account.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDelete(user.id)}>
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </>
+                          ) : null}
                         </div>
                       </TableCell>
                     )}
