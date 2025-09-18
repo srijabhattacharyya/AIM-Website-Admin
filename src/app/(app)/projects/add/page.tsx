@@ -46,7 +46,7 @@ export default function AddProjectPage() {
     const router = useRouter();
 
     const form = useForm<ProjectFormValues>({
-        resolver: zodResolver(projectFormSchema),
+        resolver: zodResolver(projectFormFormSchema),
         defaultValues: {
             name: "",
             description: "",
