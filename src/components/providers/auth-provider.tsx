@@ -109,9 +109,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setRole = (role: Role) => {
     if (user) {
+      // Update the current user object
       const switchedUser = { ...user, role: role };
       setUser(switchedUser);
       localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(switchedUser));
+  
+      // Also update the full users list in localStorage
+      const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
+      let allUsers: User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
+  
+      allUsers = allUsers.map(u => 
+        u.id === switchedUser.id ? switchedUser : u
+      );
+  
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(allUsers));
     }
   };
 
