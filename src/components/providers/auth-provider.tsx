@@ -110,20 +110,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setRole = (role: Role) => {
     if (user) {
       const switchedUser = { ...user, role };
-  
+
       // Update the current user state + storage
       setUser(switchedUser);
       localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(switchedUser));
-  
+
       // Update the users list in localStorage
       const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
       let allUsers: User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
-  
+
       allUsers = allUsers.map(u => 
         u.id === switchedUser.id ? switchedUser : u
       );
-  
+
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(allUsers));
+      
+      router.refresh();
+      toast({
+        title: "Role switched",
+        description: `You are now viewing the dashboard as ${role}.`,
+      });
     }
   };
 
