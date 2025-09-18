@@ -105,11 +105,22 @@ export default function UsersPage() {
     
   const canManageUsers = currentUser?.role === 'Admin' || currentUser?.role === 'Manager';
 
-  const canEditOrDelete = (targetUserRole: Role) => {
+  const canEditOrDelete = (targetUser: User) => {
     if (!currentUser) return false;
+    if (currentUser.id === targetUser.id) return false; // Can't edit or delete yourself
     if (currentUser.role === 'Admin') return true;
     if (currentUser.role === 'Manager') {
-      return ['Volunteer', 'Intern', 'Donor'].includes(targetUserRole);
+      return ['Volunteer', 'Intern', 'Donor'].includes(targetUser.role);
+    }
+    return false;
+  }
+  
+  const canChangeRole = (targetUser: User) => {
+    if (!currentUser) return false;
+    if (currentUser.id === targetUser.id) return false; // Can't change your own role
+    if (currentUser.role === 'Admin') return true;
+    if (currentUser.role === 'Manager') {
+       return ['Volunteer', 'Intern', 'Donor'].includes(targetUser.role);
     }
     return false;
   }
@@ -175,7 +186,7 @@ export default function UsersPage() {
                           onValueChange={(newRole: Role) =>
                             handleRoleChange(user.id, newRole)
                           }
-                          disabled={!canEditOrDelete(user.role) || user.id === currentUser?.id}
+                          disabled={!canChangeRole(user)}
                         >
                           <SelectTrigger>
                             <SelectValue />
@@ -193,7 +204,7 @@ export default function UsersPage() {
                     {canManageUsers && (
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                           <Button variant="outline" size="icon" asChild disabled={!canEditOrDelete(user.role)}>
+                           <Button variant="outline" size="icon" asChild disabled={!canEditOrDelete(user)}>
                               <Link href={`/users/edit/${user.id}`}>
                                 <Pencil className="h-4 w-4" />
                                 <span className="sr-only">Edit user</span>
@@ -201,7 +212,7 @@ export default function UsersPage() {
                             </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="icon" disabled={user.id === currentUser?.id || !canEditOrDelete(user.role)}>
+                              <Button variant="destructive" size="icon" disabled={!canEditOrDelete(user)}>
                                 <Trash2 className="h-4 w-4" />
                                 <span className="sr-only">Delete user</span>
                               </Button>

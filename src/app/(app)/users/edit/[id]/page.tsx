@@ -111,6 +111,16 @@ export default function EditUserPage() {
     window.dispatchEvent(new Event("users-updated"));
     router.push("/users");
   };
+  
+  const canEditRole = () => {
+    if (!currentUser || !user) return false;
+    if (currentUser.id === user.id) return false;
+    if (currentUser.role === 'Admin') return true;
+    if (currentUser.role === 'Manager') {
+       return ['Volunteer', 'Intern', 'Donor'].includes(user.role);
+    }
+    return false;
+  }
 
   if (loading) {
     return (
@@ -170,7 +180,7 @@ export default function EditUserPage() {
                     <Select 
                       onValueChange={field.onChange} 
                       value={field.value}
-                      disabled={user.id === currentUser?.id}
+                      disabled={!canEditRole()}
                     >
                       <FormControl>
                         <SelectTrigger>
