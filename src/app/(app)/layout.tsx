@@ -3,16 +3,9 @@
 import { SidebarProvider, Sidebar } from "@/components/ui/sidebar";
 import { Header } from "@/components/layout/header";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
-import { useAuth } from "@/hooks/use-auth";
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import type { User } from "@/lib/types";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { user: authUser, loading } = useAuth();
-  const router = useRouter();
-
   // Temporary user for development
   const devUser: User = {
     id: "user-admin-dev",
@@ -22,27 +15,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     role: "Admin",
     status: "Active"
   };
-  
-  const user = authUser || devUser;
 
-
-  // The original authentication logic is commented out for development.
-  /*
-  useEffect(() => {
-    if (!loading && !user) {
-      router.replace('/login');
-    }
-  }, [user, loading, router]);
-
-
-  if (loading || !user) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
-  */
+  const user = devUser;
 
   return (
     <SidebarProvider>
