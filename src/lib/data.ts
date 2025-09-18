@@ -56,3 +56,30 @@ export const donationMonthlyTrend = rawMonthlyTrend.map(d => ({
   ...d,
   Total: d.INR + d.USD * 80
 }));
+
+const rawWeeklyTrend = [
+  { week: "W1", INR: 10000, USD: 125 },
+  { week: "W2", INR: 12000, USD: 150 },
+  { week: "W3", INR: 8000, USD: 100 },
+  { week: "W4", INR: 15000, USD: 180 },
+];
+
+export const donationWeeklyTrend = rawWeeklyTrend.map(d => ({
+  ...d,
+  Total: d.INR + d.USD * 80
+}));
+
+const rawDailyTrend = [
+  { day: "Mon", INR: 2000, USD: 25 },
+  { day: "Tue", INR: 1500, USD: 20 },
+  { day: "Wed", INR: 3000, USD: 35 },
+  { day: "Thu", INR: 2500, USD: 30 },
+  { day: "Fri", INR: 4000, USD: 50 },
+  { day: "Sat", INR: 5000, USD: 60 },
+  { day: "Sun", INR: 1000, USD: 15 },
+];
+
+export const donationDailyTrend = rawDailyTrend.map(d => ({
+  ...d,
+  Total: d.INR + d.USD * 80
+}));
