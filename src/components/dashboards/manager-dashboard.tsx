@@ -3,6 +3,7 @@ import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { mockProjects, mockDonations } from "@/lib/data";
 import ReportGenerator from "@/components/report-generator";
+import { IndianRupee } from "lucide-react";
 
 export default function ManagerDashboard() {
   const donationsByProject = mockProjects.map(p => {
@@ -49,7 +50,10 @@ export default function ManagerDashboard() {
                 {donationsByProject.map((p) => (
                   <TableRow key={p.name}>
                     <TableCell className="font-medium">{p.name}</TableCell>
-                    <TableCell className="text-right">₹{p.total.toLocaleString('en-IN')}</TableCell>
+                    <TableCell className="text-right flex items-center justify-end">
+                      <IndianRupee className="h-4 w-4 mr-1" />
+                      {p.total.toLocaleString('en-IN')}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
