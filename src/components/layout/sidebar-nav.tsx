@@ -59,7 +59,7 @@ const navItemsByRole: Record<Role, { href: string; icon: React.ReactNode; label:
 const Logo = () => (
     <div className="flex items-center gap-2 p-4">
         <Handshake className="h-8 w-8 text-primary" />
-        <h1 className="text-xl font-bold text-sidebar-foreground">NGO Hub</h1>
+        <h1 className="text-xl font-bold text-sidebar-foreground">AIM Foundation</h1>
     </div>
 )
 

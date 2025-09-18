@@ -4,7 +4,7 @@ import { AuthProvider } from '@/components/providers/auth-provider';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'NGO Hub',
+  title: 'AIM Foundation',
   description: 'Admin Panel for NGOs',
 };
 

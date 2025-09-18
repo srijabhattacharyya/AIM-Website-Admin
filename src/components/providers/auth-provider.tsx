@@ -28,24 +28,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (DEV_MODE_BYPASS_LOGIN) {
-      const devUser = mockUsers.Admin;
-      setUser(devUser);
-      localStorage.setItem("ngo-hub-user", JSON.stringify(devUser));
-      setLoading(false);
-      return;
-    }
-    
-    const storedUser = localStorage.getItem("ngo-hub-user");
+    const storedUser = localStorage.getItem("aim-foundation-user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    if (DEV_MODE_BYPASS_LOGIN) {
+      const devUser = mockUsers.Admin;
+      if (!user || user.id !== devUser.id) {
+          setUser(devUser);
+          localStorage.setItem("aim-foundation-user", JSON.stringify(devUser));
+      }
+      setLoading(false);
+      return;
+    }
+  }, [user]);
+
   const handleAuth = useCallback((newUser: User) => {
     setUser(newUser);
-    localStorage.setItem("ngo-hub-user", JSON.stringify(newUser));
+    localStorage.setItem("aim-foundation-user", JSON.stringify(newUser));
     router.push("/dashboard");
     setLoading(false);
   }, [router]);
@@ -65,17 +69,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     setUser(null);
-    localStorage.removeItem("ngo-hub-user");
+    localStorage.removeItem("aim-foundation-user");
     router.push("/login");
   }, [router]);
 
   const setRole = useCallback((role: Role) => {
-    if (DEV_MODE_BYPASS_LOGIN) {
-      const newUser = mockUsers[role];
+    if (user) {
+      const newUser = { ...mockUsers[role], id: user.id };
       setUser(newUser);
-      localStorage.setItem("ngo-hub-user", JSON.stringify(newUser));
+      localStorage.setItem("aim-foundation-user", JSON.stringify(newUser));
     }
-  }, []);
+  }, [user]);
 
   const value = { user, loading, login, googleLogin, logout, setRole };
 
