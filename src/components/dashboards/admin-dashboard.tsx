@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { DollarSign, Briefcase, Users, Heart, IndianRupee } from "lucide-react";
 import { DonationCharts } from "@/components/charts";
@@ -68,8 +70,8 @@ export default function AdminDashboard() {
               <div key={project.id} className="space-y-2">
                 <div className="flex justify-between">
                   <span className="font-medium">{project.name}</span>
-                  <span className="text-sm text-muted-foreground">
-                    ₹{project.totalDonated.toLocaleString('en-IN')} / ₹{(project.budget || 0).toLocaleString('en-IN')}
+                  <span className="text-sm text-muted-foreground flex items-center">
+                    <IndianRupee className="h-4 w-4 mr-1" />{project.totalDonated.toLocaleString('en-IN')} / <IndianRupee className="h-4 w-4 mr-1" />{(project.budget || 0).toLocaleString('en-IN')}
                   </span>
                 </div>
                 <Progress value={project.progress} />
