@@ -1,11 +1,17 @@
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { mockProjects } from "@/lib/data";
 import { PlusCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useAuth } from "@/hooks/use-auth";
+import Link from "next/link";
 
 export default function ProjectsPage() {
+  const { user } = useAuth();
+
   const getBadgeVariant = (status: string) => {
     switch (status) {
       case 'Ongoing': return 'default';
@@ -19,10 +25,14 @@ export default function ProjectsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="font-headline text-3xl font-bold tracking-tight">Projects</h1>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add Project
-        </Button>
+        {user?.role === 'Admin' && (
+          <Button asChild>
+            <Link href="/projects/add">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Project
+            </Link>
+          </Button>
+        )}
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {mockProjects.map(project => (
@@ -38,10 +48,12 @@ export default function ProjectsPage() {
             </CardContent>
             <CardFooter className="flex justify-between items-center">
               <Badge variant={getBadgeVariant(project.status) as any}>{project.status}</Badge>
-              <Button variant="destructive" size="icon">
-                <Trash2 className="h-4 w-4" />
-                <span className="sr-only">Delete project</span>
-              </Button>
+              {user?.role === 'Admin' && (
+                <Button variant="destructive" size="icon">
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Delete project</span>
+                </Button>
+              )}
             </CardFooter>
           </Card>
         ))}
