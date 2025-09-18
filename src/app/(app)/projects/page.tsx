@@ -20,7 +20,7 @@ import { initiatives, type Initiative, type Project } from "@/lib/types";
 
 export default function ProjectsPage() {
   const { user } = useAuth();
-  const [projects, setProjects] = useState<Project[]>(mockProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [selectedInitiative, setSelectedInitiative] = useState<Initiative | "all">("all");
 
   useEffect(() => {
@@ -28,6 +28,7 @@ export default function ProjectsPage() {
     if (storedProjects) {
       setProjects(JSON.parse(storedProjects));
     } else {
+      setProjects(mockProjects);
       localStorage.setItem("aim-foundation-projects", JSON.stringify(mockProjects));
     }
   }, []);
