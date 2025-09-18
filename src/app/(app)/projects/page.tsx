@@ -35,25 +35,26 @@ export default function ProjectsPage() {
   useEffect(() => {
     const loadProjects = () => {
       const storedProjectsString = localStorage.getItem(PROJECTS_STORAGE_KEY);
-      
-      if (storedProjectsString) {
+
+      if (storedProjectsString && storedProjectsString !== "[]") {
+        // ✅ Use saved projects
         setProjects(JSON.parse(storedProjectsString));
-      } else {
-        // Only seed mock data if nothing exists yet
+      } else if (!storedProjectsString) {
+        // ✅ First visit → seed mock data
         localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(mockProjects));
         setProjects(mockProjects);
+      } else {
+        // ✅ Empty array stays empty
+        setProjects([]);
       }
     };
-    
+
     loadProjects();
 
-    const handleStorageChange = () => {
-        loadProjects();
-    };
+    const handleStorageChange = () => loadProjects();
 
     window.addEventListener("projects-updated", handleStorageChange);
     window.addEventListener("storage", handleStorageChange);
-
 
     return () => {
       window.removeEventListener("projects-updated", handleStorageChange);
@@ -62,68 +63,86 @@ export default function ProjectsPage() {
   }, []);
 
   const handleDelete = (projectId: string) => {
-    const updatedProjects = projects.filter(p => p.id !== projectId);
+    const updatedProjects = projects.filter((p) => p.id !== projectId);
     setProjects(updatedProjects);
     localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(updatedProjects));
-    // Dispatch event to notify other components if necessary
-    window.dispatchEvent(new Event("projects-updated"));
+    window.dispatchEvent(new Event("projects-updated")); // notify others
   };
 
   const getBadgeVariant = (status: string) => {
     switch (status) {
-      case 'Ongoing': return 'default';
-      case 'Completed': return 'secondary';
-      case 'Planning': return 'outline';
-      default: return 'default';
+      case "Ongoing":
+        return "default";
+      case "Completed":
+        return "secondary";
+      case "Planning":
+        return "outline";
+      default:
+        return "default";
     }
   };
-  
-  const filteredProjects = selectedInitiative === "all" 
-    ? projects 
-    : projects.filter(p => p.initiative === selectedInitiative);
+
+  const filteredProjects =
+    selectedInitiative === "all"
+      ? projects
+      : projects.filter((p) => p.initiative === selectedInitiative);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="font-headline text-3xl font-bold tracking-tight">Projects</h1>
         <div className="flex items-center gap-2">
-            <Select value={selectedInitiative} onValueChange={(value) => setSelectedInitiative(value as any)}>
-                <SelectTrigger className="w-[240px]">
-                    <SelectValue placeholder="Filter by initiative" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">All Initiatives</SelectItem>
-                    {initiatives.map(initiative => (
-                        <SelectItem key={initiative} value={initiative}>{initiative}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-            {(user?.role === 'Admin' || user?.role === 'Manager') && (
-              <Button asChild>
-                <Link href="/projects/add">
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Add Project
-                </Link>
-              </Button>
-            )}
+          <Select
+            value={selectedInitiative}
+            onValueChange={(value) => setSelectedInitiative(value as any)}
+          >
+            <SelectTrigger className="w-[240px]">
+              <SelectValue placeholder="Filter by initiative" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Initiatives</SelectItem>
+              {initiatives.map((initiative) => (
+                <SelectItem key={initiative} value={initiative}>
+                  {initiative}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {(user?.role === "Admin" || user?.role === "Manager") && (
+            <Button asChild>
+              <Link href="/projects/add">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Project
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredProjects.map(project => (
+        {filteredProjects.map((project) => (
           <Card key={project.id} className="flex flex-col">
             <CardHeader>
               <div className="relative h-40 w-full mb-4">
-                  <Image src={project.imageUrl} alt={project.name} fill={true} style={{objectFit: 'cover'}} className="rounded-t-lg" data-ai-hint="community project" />
+                <Image
+                  src={project.imageUrl}
+                  alt={project.name}
+                  fill={true}
+                  style={{ objectFit: "cover" }}
+                  className="rounded-t-lg"
+                  data-ai-hint="community project"
+                />
               </div>
               <CardTitle>{project.name}</CardTitle>
-               <CardDescription>{project.initiative}</CardDescription>
+              <CardDescription>{project.initiative}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1">
               <p className="text-sm text-muted-foreground">{project.description}</p>
             </CardContent>
             <CardFooter className="flex justify-between items-center">
-              <Badge variant={getBadgeVariant(project.status) as any}>{project.status}</Badge>
-              {(user?.role === 'Admin' || user?.role === 'Manager') && (
+              <Badge variant={getBadgeVariant(project.status) as any}>
+                {project.status}
+              </Badge>
+              {(user?.role === "Admin" || user?.role === "Manager") && (
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="icon" asChild>
                     <Link href={`/projects/edit/${project.id}`}>
@@ -131,7 +150,11 @@ export default function ProjectsPage() {
                       <span className="sr-only">Edit project</span>
                     </Link>
                   </Button>
-                  <Button variant="destructive" size="icon" onClick={() => handleDelete(project.id)}>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => handleDelete(project.id)}
+                  >
                     <Trash2 className="h-4 w-4" />
                     <span className="sr-only">Delete project</span>
                   </Button>
