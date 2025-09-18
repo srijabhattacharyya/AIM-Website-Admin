@@ -53,16 +53,28 @@ export default function AddUserPage() {
     setHydrated(true);
   }, []);
 
-  const availableRoles = currentUser?.role === "Manager"
-      ? ["Volunteer", "Intern", "Donor"]
-      : ALL_ROLES;
+  let availableRoles: Role[] = [];
+  if (currentUser) {
+    switch (currentUser.role) {
+      case "Admin":
+        availableRoles = ALL_ROLES;
+        break;
+      case "Manager":
+        availableRoles = ["Volunteer", "Intern", "Donor"];
+        break;
+      case "Volunteer":
+      case "Intern":
+        availableRoles = ["Donor"];
+        break;
+    }
+  }
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
       name: "",
       email: "",
-      role: "Volunteer",
+      role: availableRoles.length > 0 ? availableRoles[0] : "Donor",
     },
   });
 

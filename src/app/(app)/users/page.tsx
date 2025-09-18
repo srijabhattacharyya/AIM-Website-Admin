@@ -58,6 +58,8 @@ export default function UsersPage() {
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('');
   };
+  
+  const canCreateUsers = currentUser?.role && ["Admin", "Manager", "Volunteer", "Intern"].includes(currentUser.role);
 
   if (!hydrated) {
     return (
@@ -71,7 +73,7 @@ export default function UsersPage() {
     <div className="space-y-6">
        <div className="flex items-center justify-between gap-4">
         <h1 className="font-headline text-3xl font-bold tracking-tight">User Management</h1>
-        {(currentUser?.role === "Admin" || currentUser?.role === "Manager") && (
+        {canCreateUsers && (
           <Button asChild>
             <Link href="/users/add">
               <PlusCircle className="mr-2 h-4 w-4" />
