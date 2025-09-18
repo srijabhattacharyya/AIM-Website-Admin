@@ -11,22 +11,24 @@ import { useState, FormEvent, useEffect } from "react";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const { login, googleLogin, user } = useAuth();
+  const { login, googleLogin, user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
+    if (!loading && user) {
       router.replace('/dashboard');
     }
-  }, [user, router]);
+  }, [user, loading, router]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      // In a real app, you'd get these values from the form
       await login("email", "password");
     } catch (error) {
       console.error(error);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -37,6 +39,7 @@ export default function LoginPage() {
       await googleLogin();
     } catch (error) {
       console.error(error);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -49,6 +52,15 @@ export default function LoginPage() {
       />
     </svg>
   );
+
+  // If we are loading or the user is already authenticated, show a loader
+  if (loading || user) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">

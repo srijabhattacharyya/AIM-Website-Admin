@@ -3,7 +3,7 @@
 import type { User, Role } from "@/lib/types";
 import { mockUsers } from "@/lib/data";
 import { createContext, useState, useEffect, ReactNode, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type AuthContextType = {
   user: User | null;
@@ -16,16 +16,30 @@ type AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// In a real app, you'd use a library like next-auth
+// or roll your own authentication.
+// For this studio, we're mocking it.
+const DEV_MODE_BYPASS_LOGIN = true;
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    // DEV MODE: Bypass login and set a default user.
-    const devUser = mockUsers.Admin;
-    setUser(devUser);
-    localStorage.setItem("ngo-hub-user", JSON.stringify(devUser));
+    if (DEV_MODE_BYPASS_LOGIN) {
+      const devUser = mockUsers.Admin;
+      setUser(devUser);
+      localStorage.setItem("ngo-hub-user", JSON.stringify(devUser));
+      setLoading(false);
+      return;
+    }
+    
+    const storedUser = localStorage.getItem("ngo-hub-user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
     setLoading(false);
   }, []);
 
@@ -38,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   const login = useCallback(async (email: string, pass: string) => {
     setLoading(true);
+    // This is a mock login. In a real app, you'd validate credentials.
     const loggedInUser = mockUsers.Admin;
     handleAuth(loggedInUser);
   }, [handleAuth]);
@@ -49,17 +64,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [handleAuth]);
 
   const logout = useCallback(async () => {
-    // In dev mode, logout will just re-set the default user.
-    const devUser = mockUsers.Admin;
-    setUser(devUser);
-    localStorage.setItem("ngo-hub-user", JSON.stringify(devUser));
-    router.push("/login"); // Still go to login for visual consistency, but app is not protected
+    setUser(null);
+    localStorage.removeItem("ngo-hub-user");
+    router.push("/login");
   }, [router]);
 
   const setRole = useCallback((role: Role) => {
-    const newUser = mockUsers[role];
-    setUser(newUser);
-    localStorage.setItem("ngo-hub-user", JSON.stringify(newUser));
+    if (DEV_MODE_BYPASS_LOGIN) {
+      const newUser = mockUsers[role];
+      setUser(newUser);
+      localStorage.setItem("ngo-hub-user", JSON.stringify(newUser));
+    }
   }, []);
 
   const value = { user, loading, login, googleLogin, logout, setRole };

@@ -5,11 +5,19 @@ import { Header } from "@/components/layout/header";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+  const router = useRouter();
 
-  // No redirect logic needed in dev mode
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/login');
+    }
+  }, [user, loading, router]);
+
 
   if (loading || !user) {
     return (
