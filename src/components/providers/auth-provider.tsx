@@ -109,25 +109,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setRole = useCallback((role: Role) => {
     if (user) {
-       const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
-       const allUsers: User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
-       const userWithNewRole = allUsers.find(u => u.role === role);
-
-      // This mock logic assumes a user exists for each role.
-      // In a real app, you'd check if the current user *can* switch to this role.
-      if (userWithNewRole) {
-        const switchedUser = { ...userWithNewRole, id: user.id, name: user.name, email: user.email, avatarUrl: user.avatarUrl };
-        setUser(switchedUser);
-        localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(switchedUser));
-      } else {
-         toast({
-          variant: "destructive",
-          title: "Role Switch Failed",
-          description: `No user found with the role "${role}".`,
-        });
-      }
+      const switchedUser = { ...user, role: role };
+      setUser(switchedUser);
+      localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(switchedUser));
     }
-  }, [user, toast]);
+  }, [user]);
 
   const value = { user, loading, login, googleLogin, logout, setRole };
 
