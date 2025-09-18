@@ -1,28 +1,56 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { allMockUsers } from "@/lib/data";
 import { type Role, type User } from "@/lib/types";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PlusCircle, Loader2 } from "lucide-react";
+import { PlusCircle, Loader2, Pencil, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const USERS_STORAGE_KEY = "aim-foundation-users";
 const ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
-
 
 export default function UsersPage() {
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [hydrated, setHydrated] = useState(false);
-  
+
   useEffect(() => {
-    
     const loadUsers = () => {
       const storedUsersString = localStorage.getItem(USERS_STORAGE_KEY);
       if (storedUsersString && storedUsersString !== "[]") {
@@ -34,7 +62,7 @@ export default function UsersPage() {
         setUsers([]);
       }
     };
-    
+
     setHydrated(true);
     loadUsers();
 
@@ -49,17 +77,33 @@ export default function UsersPage() {
   }, []);
 
   const handleRoleChange = (userId: string, newRole: Role) => {
-    const updatedUsers = users.map(u => u.id === userId ? { ...u, role: newRole } : u);
+    const updatedUsers = users.map((u) =>
+      u.id === userId ? { ...u, role: newRole } : u
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
+    window.dispatchEvent(new Event("users-updated"));
+  };
+  
+  const handleDelete = (userId: string) => {
+    const updatedUsers = users.filter((u) => u.id !== userId);
     setUsers(updatedUsers);
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
     window.dispatchEvent(new Event("users-updated"));
   };
 
   const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('');
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("");
   };
-  
-  const canCreateUsers = currentUser?.role && ["Admin", "Manager", "Volunteer", "Intern"].includes(currentUser.role);
+
+  const canCreateUsers =
+    currentUser?.role &&
+    ["Admin", "Manager", "Volunteer", "Intern"].includes(currentUser.role);
+    
+  const isAdmin = currentUser?.role === 'Admin';
 
   if (!hydrated) {
     return (
@@ -71,8 +115,10 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
-       <div className="flex items-center justify-between gap-4">
-        <h1 className="font-headline text-3xl font-bold tracking-tight">User Management</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="font-headline text-3xl font-bold tracking-tight">
+          User Management
+        </h1>
         {canCreateUsers && (
           <Button asChild>
             <Link href="/users/add">
@@ -94,40 +140,81 @@ export default function UsersPage() {
                 <TableRow>
                   <TableHead>User</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead className="text-right">Role</TableHead>
+                  <TableHead>Role</TableHead>
+                  {isAdmin && <TableHead className="text-right">Actions</TableHead>}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {users.map(user => (
+                {users.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="h-9 w-9">
                           <AvatarImage src={user.avatarUrl} alt={user.name} />
-                          <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                          <AvatarFallback>
+                            {getInitials(user.name)}
+                          </AvatarFallback>
                         </Avatar>
                         <span className="font-medium">{user.name}</span>
                       </div>
                     </TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="w-32 ml-auto">
-                        <Select 
+                    <TableCell>
+                      <div className="w-32">
+                        <Select
                           value={user.role}
-                          onValueChange={(newRole: Role) => handleRoleChange(user.id, newRole)}
-                          disabled={currentUser?.role !== 'Admin'}
+                          onValueChange={(newRole: Role) =>
+                            handleRoleChange(user.id, newRole)
+                          }
+                          disabled={!isAdmin || user.id === currentUser?.id}
                         >
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {ROLES.map(role => (
-                              <SelectItem key={role} value={role}>{role}</SelectItem>
+                            {ROLES.map((role) => (
+                              <SelectItem key={role} value={role}>
+                                {role}
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </div>
                     </TableCell>
+                    {isAdmin && (
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                           <Button variant="outline" size="icon" asChild>
+                              <Link href={`/users/edit/${user.id}`}>
+                                <Pencil className="h-4 w-4" />
+                                <span className="sr-only">Edit user</span>
+                              </Link>
+                            </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="icon" disabled={user.id === currentUser?.id}>
+                                <Trash2 className="h-4 w-4" />
+                                <span className="sr-only">Delete user</span>
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will permanently delete the user account.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDelete(user.id)}>
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
