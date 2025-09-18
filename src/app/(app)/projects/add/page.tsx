@@ -65,7 +65,7 @@ export default function AddProjectPage() {
 
   function onSubmit(data: ProjectFormValues) {
     const storedProjects = localStorage.getItem("aim-foundation-projects");
-    const projects = storedProjects ? JSON.parse(storedProjects) : mockProjects;
+    const projects: Project[] = storedProjects ? JSON.parse(storedProjects) : mockProjects;
     
     const newProject: Project = {
       id: `proj-${Date.now()}`,
