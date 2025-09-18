@@ -8,11 +8,15 @@ import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, FormEvent, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("alex.ray@example.com");
+  const [password, setPassword] = useState("password");
   const { login, googleLogin, user, loading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!loading && user) {
@@ -24,10 +28,14 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      // In a real app, you'd get these values from the form
-      await login("email", "password");
+      await login(email, password);
     } catch (error) {
       console.error(error);
+      toast({
+        variant: "destructive",
+        title: "An Error Occurred",
+        description: "Something went wrong during login. Please try again.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -39,6 +47,11 @@ export default function LoginPage() {
       await googleLogin();
     } catch (error) {
       console.error(error);
+      toast({
+        variant: "destructive",
+        title: "An Error Occurred",
+        description: "Something went wrong with Google Sign-In. Please try again.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -73,11 +86,11 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
+              <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

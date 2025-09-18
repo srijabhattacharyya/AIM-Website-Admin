@@ -40,6 +40,7 @@ const userFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
   role: z.enum(ALL_ROLES as [string, ...string[]]),
+  status: z.enum(["Active", "Inactive"]),
 });
 
 type UserFormValues = z.infer<typeof userFormSchema>;
@@ -75,6 +76,7 @@ export default function AddUserPage() {
       name: "",
       email: "",
       role: availableRoles.length > 0 ? availableRoles[0] : "Donor",
+      status: "Active",
     },
   });
 
@@ -159,6 +161,27 @@ export default function AddUserPage() {
                             {role}
                           </SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Active">Active</SelectItem>
+                        <SelectItem value="Inactive">Inactive</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

@@ -40,6 +40,7 @@ const userFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
   role: z.enum(ALL_ROLES as [string, ...string[]]),
+  status: z.enum(["Active", "Inactive"]),
 });
 
 type UserFormValues = z.infer<typeof userFormSchema>;
@@ -59,6 +60,7 @@ export default function EditUserPage() {
       name: "",
       email: "",
       role: "Donor",
+      status: "Active",
     },
   });
 
@@ -114,6 +116,17 @@ export default function EditUserPage() {
   
   const canEditRole = () => {
     if (!currentUser || !user) return false;
+    if (currentUser.id === user.id) return false;
+    if (currentUser.role === 'Admin') return true;
+    if (currentUser.role === 'Manager') {
+       return ['Volunteer', 'Intern', 'Donor'].includes(user.role);
+    }
+    return false;
+  }
+
+  const canEditStatus = () => {
+    if (!currentUser || !user) return false;
+    // You cannot deactivate yourself
     if (currentUser.id === user.id) return false;
     if (currentUser.role === 'Admin') return true;
     if (currentUser.role === 'Manager') {
@@ -193,6 +206,31 @@ export default function EditUserPage() {
                             {role}
                           </SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={!canEditStatus()}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Active">Active</SelectItem>
+                        <SelectItem value="Inactive">Inactive</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

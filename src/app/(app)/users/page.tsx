@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -161,6 +162,7 @@ export default function UsersPage() {
                   <TableHead>User</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Role</TableHead>
+                  <TableHead>Status</TableHead>
                   {canManageUsers && <TableHead className="text-right">Actions</TableHead>}
                 </TableRow>
               </TableHeader>
@@ -201,6 +203,11 @@ export default function UsersPage() {
                         </Select>
                       </div>
                     </TableCell>
+                    <TableCell>
+                       <Badge variant={user.status === 'Active' ? 'default' : 'destructive'}>
+                          {user.status}
+                        </Badge>
+                    </TableCell>
                     {canManageUsers && (
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
@@ -214,7 +221,7 @@ export default function UsersPage() {
                               </Button>
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                  <Button variant="destructive" size="icon">
+                                  <Button variant="destructive" size="icon" disabled={user.id === currentUser?.id}>
                                     <Trash2 className="h-4 w-4" />
                                     <span className="sr-only">Delete user</span>
                                   </Button>

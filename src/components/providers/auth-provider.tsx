@@ -1,9 +1,10 @@
 "use client";
 
 import type { User, Role } from "@/lib/types";
-import { mockUsers } from "@/lib/data";
+import { allMockUsers, mockUsers } from "@/lib/data";
 import { createContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 type AuthContextType = {
   user: User | null;
@@ -16,70 +17,117 @@ type AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// In a real app, you'd use a library like next-auth
-// or roll your own authentication.
-// For this studio, we're mocking it.
-const DEV_MODE_BYPASS_LOGIN = true;
+const USERS_STORAGE_KEY = "aim-foundation-users";
+const CURRENT_USER_STORAGE_KEY = "aim-foundation-user";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const pathname = usePathname();
+  const { toast } = useToast();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("aim-foundation-user");
+    const storedUser = localStorage.getItem(CURRENT_USER_STORAGE_KEY);
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      // Ensure the user is still active on page load
+      const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
+      const allUsers: User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
+      const liveUser = allUsers.find(u => u.id === parsedUser.id);
+      
+      if (liveUser && liveUser.status === 'Active') {
+        setUser(liveUser);
+      } else {
+        // If user is not found or inactive, log them out
+        localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
+      }
     }
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    if (DEV_MODE_BYPASS_LOGIN) {
-      const devUser = mockUsers.Admin;
-      if (!user || user.id !== devUser.id) {
-          setUser(devUser);
-          localStorage.setItem("aim-foundation-user", JSON.stringify(devUser));
-      }
-      setLoading(false);
-      return;
-    }
-  }, [user]);
-
   const handleAuth = useCallback((newUser: User) => {
+    if (newUser.status === 'Inactive') {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "This account is inactive. Please contact an administrator.",
+        });
+        setLoading(false);
+        return;
+    }
     setUser(newUser);
-    localStorage.setItem("aim-foundation-user", JSON.stringify(newUser));
+    localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(newUser));
     router.push("/dashboard");
     setLoading(false);
-  }, [router]);
+  }, [router, toast]);
   
   const login = useCallback(async (email: string, pass: string) => {
     setLoading(true);
-    // This is a mock login. In a real app, you'd validate credentials.
-    const loggedInUser = mockUsers.Admin;
-    handleAuth(loggedInUser);
-  }, [handleAuth]);
+    
+    const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
+    const allUsers : User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
+    
+    // In a real app, you'd validate credentials against a backend
+    const foundUser = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (foundUser) {
+      handleAuth(foundUser);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Invalid credentials. Please try again.",
+      });
+      setLoading(false);
+    }
+  }, [handleAuth, toast]);
 
   const googleLogin = useCallback(async () => {
     setLoading(true);
-    const loggedInUser = mockUsers.Donor;
-    handleAuth(loggedInUser);
-  }, [handleAuth]);
+    // This is mock, finds the first donor
+    const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
+    const allUsers : User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
+    const donorUser = allUsers.find(u => u.role === "Donor");
+    
+    if (donorUser) {
+      handleAuth(donorUser);
+    } else {
+       toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "No donor account available for Google Sign-In.",
+      });
+      setLoading(false);
+    }
+  }, [handleAuth, toast]);
 
   const logout = useCallback(async () => {
     setUser(null);
-    localStorage.removeItem("aim-foundation-user");
+    localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
     router.push("/login");
   }, [router]);
 
   const setRole = useCallback((role: Role) => {
     if (user) {
-      const newUser = { ...mockUsers[role], id: user.id };
-      setUser(newUser);
-      localStorage.setItem("aim-foundation-user", JSON.stringify(newUser));
+       const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
+       const allUsers: User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
+       const userWithNewRole = allUsers.find(u => u.role === role);
+
+      // This mock logic assumes a user exists for each role.
+      // In a real app, you'd check if the current user *can* switch to this role.
+      if (userWithNewRole) {
+        const switchedUser = { ...userWithNewRole, id: user.id, name: user.name, email: user.email, avatarUrl: user.avatarUrl };
+        setUser(switchedUser);
+        localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(switchedUser));
+      } else {
+         toast({
+          variant: "destructive",
+          title: "Role Switch Failed",
+          description: `No user found with the role "${role}".`,
+        });
+      }
     }
-  }, [user]);
+  }, [user, toast]);
 
   const value = { user, loading, login, googleLogin, logout, setRole };
 
