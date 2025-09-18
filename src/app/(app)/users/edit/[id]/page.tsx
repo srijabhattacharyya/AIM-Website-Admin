@@ -81,6 +81,18 @@ export default function EditUserPage() {
       form.reset(user);
     }
   }, [user, form]);
+  
+  let availableRoles: Role[] = [];
+  if (currentUser) {
+    switch (currentUser.role) {
+      case "Admin":
+        availableRoles = ALL_ROLES;
+        break;
+      case "Manager":
+        availableRoles = ["Volunteer", "Intern", "Donor"];
+        break;
+    }
+  }
 
   const onSubmit = (data: UserFormValues) => {
     const storedUsersString = localStorage.getItem(USERS_STORAGE_KEY);
@@ -166,7 +178,7 @@ export default function EditUserPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {ALL_ROLES.map((role) => (
+                        {availableRoles.map((role) => (
                           <SelectItem key={role} value={role}>
                             {role}
                           </SelectItem>
