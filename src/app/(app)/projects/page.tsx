@@ -18,24 +18,44 @@ import {
 } from "@/components/ui/select";
 import { initiatives, type Initiative, type Project } from "@/lib/types";
 
+const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
+
 export default function ProjectsPage() {
   const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedInitiative, setSelectedInitiative] = useState<Initiative | "all">("all");
 
   useEffect(() => {
-    const storedProjectsString = localStorage.getItem("aim-foundation-projects");
-    if (storedProjectsString) {
-      setProjects(JSON.parse(storedProjectsString));
-    } else {
-      setProjects(mockProjects); // fallback only if nothing saved yet
-    }
+    const loadProjects = () => {
+      const storedProjectsString = localStorage.getItem(PROJECTS_STORAGE_KEY);
+      if (storedProjectsString) {
+        setProjects(JSON.parse(storedProjectsString));
+      } else {
+        // Only seed mock data if nothing exists yet
+        localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(mockProjects));
+        setProjects(mockProjects);
+      }
+    };
+    
+    loadProjects();
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === PROJECTS_STORAGE_KEY) {
+        loadProjects();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   const handleDelete = (projectId: string) => {
     const updatedProjects = projects.filter(p => p.id !== projectId);
     setProjects(updatedProjects);
-    localStorage.setItem("aim-foundation-projects", JSON.stringify(updatedProjects));
+    localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(updatedProjects));
   };
 
   const getBadgeVariant = (status: string) => {
@@ -82,7 +102,7 @@ export default function ProjectsPage() {
           <Card key={project.id} className="flex flex-col">
             <CardHeader>
               <div className="relative h-40 w-full mb-4">
-                  <Image src={project.imageUrl} alt={project.name} layout="fill" objectFit="cover" className="rounded-t-lg" data-ai-hint="community project" />
+                  <Image src={project.imageUrl} alt={project.name} fill={true} objectFit="cover" className="rounded-t-lg" data-ai-hint="community project" />
               </div>
               <CardTitle>{project.name}</CardTitle>
                <CardDescription>{project.initiative}</CardDescription>
