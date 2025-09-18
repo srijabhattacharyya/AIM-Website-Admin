@@ -10,6 +10,11 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    // This is the temporary logic to bypass login for development.
+    // The original logic is commented out below.
+    router.replace("/dashboard");
+
+    /*
     if (!loading) {
       if (user) {
         router.replace("/dashboard");
@@ -17,6 +22,7 @@ export default function Home() {
         router.replace("/login");
       }
     }
+    */
   }, [user, loading, router]);
 
   return (
