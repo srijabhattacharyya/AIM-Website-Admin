@@ -191,7 +191,7 @@ export default function EditPhotoPage() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select an optional second initiative" />
-                        </Trigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="__none__">None</SelectItem>
