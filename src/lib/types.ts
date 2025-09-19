@@ -59,4 +59,7 @@ export type Upload = {
   url: string;
   name: string;
   uploadedAt: string;
+  description: string;
+  initiative: Initiative;
+  initiative2?: Initiative;
 };
