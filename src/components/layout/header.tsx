@@ -38,10 +38,10 @@ export function Header() {
 
   if (!user) {
     return (
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-end gap-4 border-b bg-card px-4 sm:px-6">
-            <Loader2 className="h-6 w-6 animate-spin" />
-        </header>
-    )
+      <header className="sticky top-0 z-10 flex h-16 items-center justify-end gap-4 border-b bg-card px-4 sm:px-6">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </header>
+    );
   }
 
   return (
@@ -49,12 +49,19 @@ export function Header() {
       <SidebarTrigger className="md:hidden" />
 
       <div className="flex flex-1 items-center justify-end gap-4">
+        {/* Role switcher */}
         <div className="w-[180px]">
-          <Select value={user.role} onValueChange={(value: Role) => setRole(value)}>
+          <Select
+            value={user.role}
+            onValueChange={(value: Role) => setRole(value)}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Switch Role" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+              position="popper"
+              className="z-[9999] bg-white shadow-lg"
+            >
               {roles.map((role) => (
                 <SelectItem key={role} value={role}>
                   {role}
@@ -64,6 +71,7 @@ export function Header() {
           </Select>
         </div>
 
+        {/* User dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full">
@@ -73,15 +81,19 @@ export function Header() {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="z-[9999]">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{user.name}</p>
-                <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user.email}
+                </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => logout()}>Log out</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => logout()}>
+              Log out
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
