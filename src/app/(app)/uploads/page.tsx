@@ -22,7 +22,9 @@ import { useToast } from "@/hooks/use-toast";
 const UPLOADS_STORAGE_KEY = "aim-foundation-uploads";
 
 const uploadFormSchema = z.object({
-  file: z.instanceof(FileList).refine(files => files.length > 0, "A file is required."),
+  file: z
+    .any()
+    .refine((files) => typeof window === 'undefined' || (files instanceof FileList && files.length > 0), "A file is required."),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
   initiative: z.enum([...initiatives] as [string, ...string[]]),
   initiative2: z.enum([...initiatives, "__none__"] as [string, ...string[]])
@@ -133,7 +135,7 @@ export default function UploadsPage() {
                     fill
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     className="rounded-lg object-cover"
-                    data-ai-hint="event file"
+                    data-ai-hint="event photo"
                   />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end text-white">
                       <p className="text-sm font-semibold">{upload.initiative}</p>
