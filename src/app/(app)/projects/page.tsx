@@ -93,7 +93,7 @@ export default function ProjectsPage() {
   const filteredProjects =
     selectedInitiative === "all"
       ? projects
-      : projects.filter((p) => p.initiative === selectedInitiative);
+      : projects.filter((p) => p.initiative === selectedInitiative || p.initiative2 === selectedInitiative);
 
   if (!hydrated) {
     return (
