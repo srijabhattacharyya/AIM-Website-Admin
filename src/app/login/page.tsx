@@ -51,7 +51,7 @@ export default function LoginPage() {
          <div className="flex justify-center items-center mb-4">
             <Handshake className="h-12 w-12 text-primary" />
         </div>
-        <CardTitle className="text-2xl">Welcome Back!</CardTitle>
+        <CardTitle className="text-2xl">AIM Foundation</CardTitle>
         <CardDescription>Enter your credentials to sign in to your account.</CardDescription>
       </CardHeader>
       <CardContent>
