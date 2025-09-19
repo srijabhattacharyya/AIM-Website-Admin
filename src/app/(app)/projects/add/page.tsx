@@ -34,7 +34,6 @@ import { initiatives, type Project, type Initiative } from "@/lib/types";
 
 const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
 
-// ✅ Validation Schema
 const projectFormSchema = z.object({
   name: z.string().min(2, { message: "Project name must be at least 2 characters." }),
   initiative: z.enum([...initiatives] as [string, ...string[]]),
@@ -73,13 +72,8 @@ export default function AddProjectPage() {
 
     const updatedProjects = [...storedProjects, newProject];
 
-    // ✅ Save
     localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(updatedProjects));
-
-    // ✅ Notify ProjectsPage to re-render
     window.dispatchEvent(new Event("projects-updated"));
-
-    // ✅ Redirect back
     router.push("/projects");
   };
 
@@ -96,7 +90,6 @@ export default function AddProjectPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Project Name */}
               <FormField
                 control={form.control}
                 name="name"
@@ -111,7 +104,6 @@ export default function AddProjectPage() {
                 )}
               />
 
-              {/* Initiative */}
               <FormField
                 control={form.control}
                 name="initiative"
@@ -137,7 +129,6 @@ export default function AddProjectPage() {
                 )}
               />
 
-              {/* Description */}
               <FormField
                 control={form.control}
                 name="description"
@@ -152,7 +143,6 @@ export default function AddProjectPage() {
                 )}
               />
 
-              {/* Status */}
               <FormField
                 control={form.control}
                 name="status"
@@ -163,7 +153,7 @@ export default function AddProjectPage() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select project status" />
-                        </Trigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="Planning">Planning</SelectItem>
@@ -176,7 +166,6 @@ export default function AddProjectPage() {
                 )}
               />
 
-              {/* Image URL */}
               <FormField
                 control={form.control}
                 name="imageUrl"
@@ -191,7 +180,6 @@ export default function AddProjectPage() {
                 )}
               />
 
-              {/* Submit */}
               <Button type="submit" className="w-full">
                 Save Project
               </Button>
