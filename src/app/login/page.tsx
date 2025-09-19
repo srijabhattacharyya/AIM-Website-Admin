@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +22,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
-import { Loader2, Handshake } from "lucide-react";
+import { Loader2, Handshake, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 const loginFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -32,6 +34,8 @@ type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 export default function LoginPage() {
   const { login, loading } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -76,9 +80,20 @@ export default function LoginPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
-                  </FormControl>
+                  <div className="relative">
+                    <FormControl>
+                      <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} />
+                    </FormControl>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                      </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
