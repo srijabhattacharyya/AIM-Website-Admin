@@ -37,7 +37,9 @@ const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
 const projectFormSchema = z.object({
   name: z.string().min(2, { message: "Project name must be at least 2 characters." }),
   initiative: z.enum([...initiatives] as [string, ...string[]]),
-  initiative2: z.enum([...initiatives] as [string, ...string[]]).optional().or(z.literal("")),
+  initiative2: z.enum([...initiatives, "__none__"] as [string, ...string[]])
+    .optional()
+    .transform((val) => (val === "__none__" ? "" : val)),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
   status: z.enum(["Planning", "Ongoing", "Completed"]),
   imageUrl: z.string().url({ message: "Please enter a valid image URL." }).or(z.string().length(0)),
@@ -53,7 +55,7 @@ export default function AddProjectPage() {
     defaultValues: {
       name: "",
       initiative: initiatives[0],
-      initiative2: "",
+      initiative2: "__none__",
       description: "",
       status: "Planning",
       imageUrl: "",
@@ -152,7 +154,7 @@ export default function AddProjectPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">None</SelectItem>
+                        <SelectItem value="__none__">None</SelectItem>
                         {initiatives.map((initiative) => (
                           <SelectItem key={initiative} value={initiative}>
                             {initiative}
