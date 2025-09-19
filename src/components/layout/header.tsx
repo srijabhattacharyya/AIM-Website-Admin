@@ -20,27 +20,23 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
-import type { Role, User } from "@/lib/types";
-import { ChevronsUpDown } from "lucide-react";
+import type { Role } from "@/lib/types";
+import { ChevronsUpDown, Loader2 } from "lucide-react";
 
 export function Header() {
-  const { user: authUser, logout, setRole } = useAuth();
+  const { user, logout, setRole } = useAuth();
   const roles: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
-
-  // Temporary user for development
-  const devUser: User = {
-    id: "user-admin-dev",
-    name: "Dev Admin",
-    email: "dev@example.com",
-    avatarUrl: "https://picsum.photos/seed/dev/100/100",
-    role: "Admin",
-    status: "Active"
-  };
-
-  const user = authUser || devUser; // Use authUser if available, otherwise fall back to devUser
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('');
+  }
+
+  if (!user) {
+    return (
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-end gap-4 border-b bg-card px-4 sm:px-6">
+            <Loader2 className="h-6 w-6 animate-spin" />
+        </header>
+    )
   }
 
   return (
