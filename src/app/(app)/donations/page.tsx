@@ -1,11 +1,26 @@
+
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { mockDonations } from "@/lib/data";
 import { Download, IndianRupee, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { Donation } from "@/lib/types";
+
+const DONATIONS_STORAGE_KEY = "aim-foundation-donations";
 
 export default function DonationsPage() {
+  const [donations, setDonations] = useState<Donation[]>([]);
+
+  useEffect(() => {
+    const storedDonations = localStorage.getItem(DONATIONS_STORAGE_KEY);
+    if (storedDonations) {
+      setDonations(JSON.parse(storedDonations));
+    }
+  }, []);
+
   return (
     <div className="space-y-6">
       <h1 className="font-headline text-3xl font-bold tracking-tight">Donations</h1>
@@ -37,7 +52,7 @@ export default function DonationsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockDonations.map(donation => (
+                {donations.map(donation => (
                   <TableRow key={donation.id}>
                     <TableCell className="font-medium">{donation.donorName}</TableCell>
                     <TableCell>{donation.donorEmail}</TableCell>

@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { mockProjects } from "@/lib/data";
 import { PlusCircle, Trash2, Pencil, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/use-auth";
@@ -51,12 +50,8 @@ export default function ProjectsPage() {
     
     const loadProjects = () => {
       const storedProjectsString = localStorage.getItem(PROJECTS_STORAGE_KEY);
-
-      if (storedProjectsString && storedProjectsString !== "[]") {
+      if (storedProjectsString) {
         setProjects(JSON.parse(storedProjectsString));
-      } else if (!storedProjectsString) {
-        localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(mockProjects));
-        setProjects(mockProjects);
       } else {
         setProjects([]);
       }

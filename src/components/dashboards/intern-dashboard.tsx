@@ -1,13 +1,26 @@
+
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { mockTasks } from "@/lib/data";
 import { FileUp, ListChecks } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { Task } from "@/lib/types";
+
+const TASKS_STORAGE_KEY = "aim-foundation-tasks";
+
 
 export default function InternDashboard() {
-  const internTasks = mockTasks.slice(1, 4);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  useEffect(() => {
+    const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+    if(storedTasks) setTasks(JSON.parse(storedTasks));
+  }, []);
+
+  const internTasks = tasks.slice(1, 4);
   const weeklyProgress = 60;
 
   return (

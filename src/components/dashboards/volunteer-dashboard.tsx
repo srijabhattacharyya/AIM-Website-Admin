@@ -1,12 +1,30 @@
+
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { mockProjects, mockTasks } from "@/lib/data";
 import { BookOpen } from "lucide-react";
 import Link from 'next/link';
+import { useEffect, useState } from "react";
+import type { Project, Task } from "@/lib/types";
+
+const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
+const TASKS_STORAGE_KEY = "aim-foundation-tasks";
 
 export default function VolunteerDashboard() {
-  const assignedProjects = mockProjects.slice(0, 2); 
-  const volunteerTasks = mockTasks.slice(0, 3);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useEffect(() => {
+    const storedProjects = localStorage.getItem(PROJECTS_STORAGE_KEY);
+    if(storedProjects) setProjects(JSON.parse(storedProjects));
+
+    const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+    if(storedTasks) setTasks(JSON.parse(storedTasks));
+  }, []);
+
+  const assignedProjects = projects.slice(0, 2); 
+  const volunteerTasks = tasks.slice(0, 3);
 
   return (
     <div className="grid gap-6 md:grid-cols-2">

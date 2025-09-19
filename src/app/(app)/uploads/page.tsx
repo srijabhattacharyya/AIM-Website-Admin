@@ -5,14 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { mockUploads } from "@/lib/data";
 import { Upload as UploadIcon, Trash2, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/use-auth";
-import type { User } from "@/lib/types";
+import type { User, Upload } from "@/lib/types";
+
+const UPLOADS_STORAGE_KEY = "aim-foundation-uploads";
 
 export default function UploadsPage() {
   const { user: authUser } = useAuth();
+  const [uploads, setUploads] = useState<Upload[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
   // Temporary user for development
@@ -29,6 +31,10 @@ export default function UploadsPage() {
 
   useEffect(() => {
     setHydrated(true);
+    const storedUploads = localStorage.getItem(UPLOADS_STORAGE_KEY);
+    if(storedUploads) {
+      setUploads(JSON.parse(storedUploads));
+    }
   }, []);
 
   const canManageUploads = user?.role === "Admin" || user?.role === "Manager";
@@ -52,7 +58,7 @@ export default function UploadsPage() {
               <CardDescription>Browse all uploaded files.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {mockUploads.map(upload => (
+              {uploads.map(upload => (
                 <div key={upload.id} className="group relative aspect-w-1 aspect-h-1">
                   <Image 
                     src={upload.url} 

@@ -1,7 +1,7 @@
 "use client";
 
 import type { User, Role } from "@/lib/types";
-import { allMockUsers, mockUsers } from "@/lib/data";
+import { allMockUsers } from "@/lib/data";
 import { createContext, useState, useEffect, ReactNode, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const parsedUser = JSON.parse(storedUser);
       // Ensure the user is still active on page load
       const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
-      const allUsers: User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
+      const allUsers: User[] = allUsersString ? JSON.parse(allUsersString) : [];
       const liveUser = allUsers.find(u => u.id === parsedUser.id);
       
       if (liveUser && liveUser.status === 'Active') {
@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     
     const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
-    const allUsers : User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
+    const allUsers : User[] = allUsersString ? JSON.parse(allUsersString) : [];
     
     // In a real app, you'd validate credentials against a backend
     const foundUser = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     // This is mock, finds the first donor
     const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
-    const allUsers : User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
+    const allUsers : User[] = allUsersString ? JSON.parse(allUsersString) : [];
     const donorUser = allUsers.find(u => u.role === "Donor");
     
     if (donorUser) {
@@ -117,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Update the users list in localStorage
       const allUsersString = localStorage.getItem(USERS_STORAGE_KEY);
-      let allUsers: User[] = allUsersString ? JSON.parse(allUsersString) : allMockUsers;
+      let allUsers: User[] = allUsersString ? JSON.parse(allUsersString) : [];
 
       allUsers = allUsers.map(u => 
         u.id === switchedUser.id ? switchedUser : u

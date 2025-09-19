@@ -3,24 +3,45 @@
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { DollarSign, Briefcase, Users, Heart, IndianRupee } from "lucide-react";
 import { DonationCharts } from "@/components/charts";
-import { mockDonations, mockProjects, allMockUsers } from "@/lib/data";
 import { Progress } from "@/components/ui/progress";
+import { useEffect, useState } from "react";
+import type { Donation, Project, User } from "@/lib/types";
+
+const DONATIONS_STORAGE_KEY = "aim-foundation-donations";
+const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
+const USERS_STORAGE_KEY = "aim-foundation-users";
 
 export default function AdminDashboard() {
-  const totalDonationsINR = mockDonations
+  const [donations, setDonations] = useState<Donation[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const storedDonations = localStorage.getItem(DONATIONS_STORAGE_KEY);
+    if(storedDonations) setDonations(JSON.parse(storedDonations));
+
+    const storedProjects = localStorage.getItem(PROJECTS_STORAGE_KEY);
+    if(storedProjects) setProjects(JSON.parse(storedProjects));
+
+    const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
+    if(storedUsers) setUsers(JSON.parse(storedUsers));
+  }, [])
+
+
+  const totalDonationsINR = donations
     .filter(d => d.currency === 'INR')
     .reduce((acc, d) => acc + d.amount, 0);
-  const totalDonationsUSD = mockDonations
+  const totalDonationsUSD = donations
     .filter(d => d.currency === 'USD')
     .reduce((acc, d) => acc + d.amount, 0);
 
-  const totalProjects = mockProjects.length;
+  const totalProjects = projects.length;
   const totalBeneficiaries = 12500; // Mock data
-  const totalVolunteers = allMockUsers.filter(u => u.role === 'Volunteer').length;
+  const totalVolunteers = users.filter(u => u.role === 'Volunteer').length;
 
-  const projectDonationProgress = mockProjects.map(project => {
-    const donations = mockDonations.filter(d => d.project === project.name);
-    const totalDonated = donations.reduce((acc, d) => {
+  const projectDonationProgress = projects.map(project => {
+    const projectDonations = donations.filter(d => d.project === project.name);
+    const totalDonated = projectDonations.reduce((acc, d) => {
       // Normalize USD to INR for progress calculation
       const amountInINR = d.currency === 'USD' ? d.amount * 80 : d.amount;
       return acc + amountInINR;

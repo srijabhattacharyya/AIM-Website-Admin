@@ -25,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { allMockUsers } from "@/lib/data";
 import { type Role, type User } from "@/lib/types";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -67,11 +66,8 @@ export default function UsersPage() {
   useEffect(() => {
     const loadUsers = () => {
       const storedUsersString = localStorage.getItem(USERS_STORAGE_KEY);
-      if (storedUsersString && storedUsersString !== "[]") {
+      if (storedUsersString) {
         setUsers(JSON.parse(storedUsersString));
-      } else if (!storedUsersString) {
-        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(allMockUsers));
-        setUsers(allMockUsers);
       } else {
         setUsers([]);
       }

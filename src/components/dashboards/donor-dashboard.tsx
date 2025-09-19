@@ -1,13 +1,32 @@
+
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { mockDonations, mockProjects } from "@/lib/data";
 import { Download, Gift, IndianRupee, MessageSquareHeart } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import type { Donation, Project } from "@/lib/types";
+
+const DONATIONS_STORAGE_KEY = "aim-foundation-donations";
+const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
 
 export default function DonorDashboard() {
-  // Assuming the logged-in donor is "Morgan Brown"
-  const donorDonations = mockDonations.filter(d => d.donorEmail === "morgan.brown@example.com");
+  const { user } = useAuth();
+  const [donations, setDonations] = useState<Donation[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  
+  useEffect(() => {
+    const storedDonations = localStorage.getItem(DONATIONS_STORAGE_KEY);
+    if(storedDonations) setDonations(JSON.parse(storedDonations));
+
+    const storedProjects = localStorage.getItem(PROJECTS_STORAGE_KEY);
+    if(storedProjects) setProjects(JSON.parse(storedProjects));
+  }, []);
+
+  const donorDonations = user ? donations.filter(d => d.donorEmail === user.email) : [];
 
   return (
     <div className="grid gap-6">
@@ -70,7 +89,7 @@ export default function DonorDashboard() {
           <CardDescription>See the impact of your donations.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
-            {mockProjects.slice(0, 2).map(project => (
+            {projects.slice(0, 2).map(project => (
                  <Card key={project.id}>
                     <CardHeader>
                         <CardTitle>{project.name}</CardTitle>

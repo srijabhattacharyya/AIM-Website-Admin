@@ -1,13 +1,32 @@
+
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { mockProjects, mockDonations } from "@/lib/data";
 import ReportGenerator from "@/components/report-generator";
 import { IndianRupee } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { Donation, Project } from "@/lib/types";
+
+const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
+const DONATIONS_STORAGE_KEY = "aim-foundation-donations";
 
 export default function ManagerDashboard() {
-  const donationsByProject = mockProjects.map(p => {
-    const projectDonations = mockDonations.filter(d => d.project === p.name);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [donations, setDonations] = useState<Donation[]>([]);
+
+  useEffect(() => {
+    const storedProjects = localStorage.getItem(PROJECTS_STORAGE_KEY);
+    if(storedProjects) setProjects(JSON.parse(storedProjects));
+
+    const storedDonations = localStorage.getItem(DONATIONS_STORAGE_KEY);
+    if(storedDonations) setDonations(JSON.parse(storedDonations));
+  }, [])
+
+
+  const donationsByProject = projects.map(p => {
+    const projectDonations = donations.filter(d => d.project === p.name);
     const total = projectDonations.reduce((acc, d) => acc + (d.currency === 'USD' ? d.amount * 80 : d.amount), 0);
     return { name: p.name, total };
   });
@@ -22,7 +41,7 @@ export default function ManagerDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {mockProjects.map((project) => (
+              {projects.map((project) => (
                 <div key={project.id} className="space-y-2">
                   <div className="flex justify-between">
                     <span className="font-medium">{project.name}</span>
