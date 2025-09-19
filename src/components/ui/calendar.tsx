@@ -23,8 +23,8 @@ function Calendar({
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex items-center justify-between px-2 relative",
-        caption_label: "text-sm font-medium text-center flex-1",
-        nav: "flex items-center space-x-1",
+        caption_label: "text-sm font-medium",
+        nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
           "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
