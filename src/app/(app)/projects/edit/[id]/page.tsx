@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +31,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { initiatives, type Project } from "@/lib/types";
+import { initiatives, type Project, type Initiative } from "@/lib/types";
 import { Loader2 } from "lucide-react";
 
 const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
@@ -39,6 +40,9 @@ const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
 const projectFormSchema = z.object({
   name: z.string().min(2, { message: "Project name must be at least 2 characters." }),
   initiative: z.enum([...initiatives] as [string, ...string[]]),
+  initiative2: z.enum([...initiatives, "__none__"] as [string, ...string[]])
+    .optional()
+    .transform((val) => (val === "__none__" ? "" : val)),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
   status: z.enum(["Planning", "Ongoing", "Completed"]),
   imageUrl: z
@@ -62,6 +66,7 @@ export default function EditProjectPage() {
     defaultValues: {
       name: "",
       initiative: initiatives[0],
+      initiative2: "__none__",
       description: "",
       status: "Planning",
       imageUrl: "",
@@ -89,6 +94,7 @@ export default function EditProjectPage() {
         form.reset({
             name: project.name,
             initiative: project.initiative,
+            initiative2: project.initiative2 || "__none__",
             description: project.description,
             status: project.status,
             imageUrl: project.imageUrl || "",
@@ -106,6 +112,7 @@ export default function EditProjectPage() {
         ? {
             ...p,
             ...data,
+            initiative2: data.initiative2 as Initiative | undefined,
             imageUrl: data.imageUrl || `https://picsum.photos/seed/${data.name}/400/200`,
           }
         : p
@@ -175,6 +182,33 @@ export default function EditProjectPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        {initiatives.map((initiative) => (
+                          <SelectItem key={initiative} value={initiative}>
+                            {initiative}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Initiative 2 */}
+              <FormField
+                control={form.control}
+                name="initiative2"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Second Initiative (Optional)</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value || "__none__"}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an optional second initiative" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="__none__">None</SelectItem>
                         {initiatives.map((initiative) => (
                           <SelectItem key={initiative} value={initiative}>
                             {initiative}
