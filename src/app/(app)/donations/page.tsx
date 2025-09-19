@@ -106,7 +106,7 @@ export default function DonationsPage() {
                             mode="single"
                             selected={startDate}
                             onSelect={setStartDate}
-                            disabled={(date) => date > new Date() || (endDate ? date > endDate : false)}
+                            disabled={(date) => date > (endDate || new Date())}
                             initialFocus
                         />
                         </PopoverContent>
