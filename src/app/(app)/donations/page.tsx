@@ -9,10 +9,7 @@ import { Download, IndianRupee, Search, DollarSign, CalendarIcon } from "lucide-
 import { useEffect, useState } from "react";
 import type { Donation } from "@/lib/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { parse } from "date-fns";
 
 const DONATIONS_STORAGE_KEY = "aim-foundation-donations";
 
@@ -20,8 +17,9 @@ export default function DonationsPage() {
   const [donations, setDonations] = useState<Donation[]>([]);
   const [filteredDonations, setFilteredDonations] = useState<Donation[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [startDateString, setStartDateString] = useState("");
+  const [endDateString, setEndDateString] = useState("");
+
 
   useEffect(() => {
     const storedDonations = localStorage.getItem(DONATIONS_STORAGE_KEY);
@@ -44,28 +42,28 @@ export default function DonationsPage() {
     }
 
     // Filter by date range
-    if (startDate) {
+    const startDate = startDateString ? parse(startDateString, 'dd-MM-yyyy', new Date()) : null;
+    const endDate = endDateString ? parse(endDateString, 'dd-MM-yyyy', new Date()) : null;
+
+    if (startDate && !isNaN(startDate.getTime())) {
+        startDate.setHours(0, 0, 0, 0);
         result = result.filter(donation => {
             const donationDate = new Date(donation.date);
-            // Set hours to 0 to compare dates only
             donationDate.setHours(0, 0, 0, 0);
-            const filterStartDate = new Date(startDate);
-            filterStartDate.setHours(0, 0, 0, 0);
-            return donationDate >= filterStartDate;
+            return donationDate >= startDate;
         });
     }
-    if (endDate) {
+    if (endDate && !isNaN(endDate.getTime())) {
+        endDate.setHours(0, 0, 0, 0);
         result = result.filter(donation => {
             const donationDate = new Date(donation.date);
             donationDate.setHours(0, 0, 0, 0);
-            const filterEndDate = new Date(endDate);
-            filterEndDate.setHours(0, 0, 0, 0);
-            return donationDate <= filterEndDate;
+            return donationDate <= endDate;
         });
     }
 
     setFilteredDonations(result);
-  }, [searchTerm, startDate, endDate, donations]);
+  }, [searchTerm, startDateString, endDateString, donations]);
 
   return (
     <div className="space-y-6">
@@ -88,52 +86,20 @@ export default function DonationsPage() {
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                            "w-[150px] justify-start text-left font-normal",
-                            !startDate && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {startDate ? format(startDate, "LLL dd, y") : <span>Start Date</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={startDate}
-                            onSelect={setStartDate}
-                            disabled={(date) => date > (endDate || new Date())}
-                            initialFocus
-                        />
-                        </PopoverContent>
-                    </Popover>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                            "w-[150px] justify-start text-left font-normal",
-                            !endDate && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {endDate ? format(endDate, "LLL dd, y") : <span>End Date</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={endDate}
-                            onSelect={setEndDate}
-                            disabled={(date) => date > new Date() || (startDate ? date < startDate : false)}
-                            initialFocus
-                        />
-                        </PopoverContent>
-                    </Popover>
+                    <Input
+                        type="text"
+                        placeholder="Start Date (dd-mm-yyyy)"
+                        value={startDateString}
+                        onChange={(e) => setStartDateString(e.target.value)}
+                        className="w-[200px]"
+                    />
+                    <Input
+                        type="text"
+                        placeholder="End Date (dd-mm-yyyy)"
+                        value={endDateString}
+                        onChange={(e) => setEndDateString(e.target.value)}
+                        className="w-[200px]"
+                    />
                 </div>
             </div>
             <Button variant="outline">
