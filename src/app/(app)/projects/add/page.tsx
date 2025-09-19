@@ -37,6 +37,7 @@ const PROJECTS_STORAGE_KEY = "aim-foundation-projects";
 const projectFormSchema = z.object({
   name: z.string().min(2, { message: "Project name must be at least 2 characters." }),
   initiative: z.enum([...initiatives] as [string, ...string[]]),
+  initiative2: z.enum([...initiatives] as [string, ...string[]]).optional().or(z.literal("")),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
   status: z.enum(["Planning", "Ongoing", "Completed"]),
   imageUrl: z.string().url({ message: "Please enter a valid image URL." }).or(z.string().length(0)),
@@ -52,6 +53,7 @@ export default function AddProjectPage() {
     defaultValues: {
       name: "",
       initiative: initiatives[0],
+      initiative2: "",
       description: "",
       status: "Planning",
       imageUrl: "",
@@ -64,11 +66,19 @@ export default function AddProjectPage() {
 
     const newProject: Project = {
       id: Date.now().toString(),
-      ...data,
+      name: data.name,
+      initiative: data.initiative,
+      description: data.description,
+      status: data.status,
       imageUrl: data.imageUrl || `https://picsum.photos/seed/${data.name}/400/200`,
       progress: 0,
       budget: 0,
     };
+
+    if (data.initiative2) {
+      newProject.initiative2 = data.initiative2 as Initiative;
+    }
+
 
     const updatedProjects = [...storedProjects, newProject];
 
@@ -117,6 +127,32 @@ export default function AddProjectPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        {initiatives.map((initiative) => (
+                          <SelectItem key={initiative} value={initiative}>
+                            {initiative}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="initiative2"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Second Initiative (Optional)</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an optional second initiative" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="">None</SelectItem>
                         {initiatives.map((initiative) => (
                           <SelectItem key={initiative} value={initiative}>
                             {initiative}

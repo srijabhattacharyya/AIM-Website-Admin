@@ -1,3 +1,4 @@
+
 export type Role = "Admin" | "Manager" | "Volunteer" | "Intern" | "Donor";
 
 export type User = {
@@ -30,6 +31,7 @@ export type Project = {
   imageUrl: string;
   status: "Ongoing" | "Completed" | "Planning";
   initiative: Initiative;
+  initiative2?: Initiative;
   progress?: number;
   budget?: number;
 };
