@@ -130,7 +130,7 @@ export default function EditPhotoPage() {
           <CardDescription>Modify the fields below to update the photo details.</CardDescription>
         </CardHeader>
         <CardContent>
-            <div className="relative aspect-[2/3] w-full max-w-sm mx-auto mb-6">
+            <div className="relative aspect-[3/2] w-full max-w-lg mx-auto mb-6">
                 <Image
                     src={upload.url}
                     alt={upload.description}

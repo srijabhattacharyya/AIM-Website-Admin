@@ -83,7 +83,7 @@ export default function UploadsPage() {
       const newUpload: Upload = {
         id: `upload-${Date.now()}`,
         name: file.name,
-        url: `https://picsum.photos/seed/${Date.now()}/400/600`, // Placeholder URL
+        url: `https://picsum.photos/seed/${Date.now()}/600/400`, // Placeholder URL
         uploadedAt: new Date().toISOString(),
         description: data.description,
         initiative: data.initiative,
@@ -125,16 +125,16 @@ export default function UploadsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Gallery</CardTitle>
-              <CardDescription>Browse all uploaded files. Displayed as 400x600.</CardDescription>
+              <CardDescription>Browse all uploaded files. Displayed as 600x400.</CardDescription>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {uploads.map(upload => (
-                <div key={upload.id} className="group relative aspect-[2/3] w-full">
+                <div key={upload.id} className="group relative aspect-[3/2] w-full">
                   <Image 
                     src={upload.url} 
                     alt={upload.name} 
                     fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="rounded-lg object-cover"
                     data-ai-hint="event photo"
                   />
@@ -162,8 +162,8 @@ export default function UploadsPage() {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>Upload File</CardTitle>
-              <CardDescription>Add new files to the gallery.</CardDescription>
+              <CardTitle>Upload Photo</CardTitle>
+              <CardDescription>Add new photos to the gallery.</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
@@ -173,7 +173,7 @@ export default function UploadsPage() {
                     name="file"
                     render={({ field: { onChange, value, ...rest } }) => (
                       <FormItem>
-                        <FormLabel>Select File (400x600 recommended)</FormLabel>
+                        <FormLabel>Select File (600x400 recommended)</FormLabel>
                         <FormControl>
                           <Input type="file" onChange={e => onChange(e.target.files)} {...rest} />
                         </FormControl>
