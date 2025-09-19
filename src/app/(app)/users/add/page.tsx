@@ -39,6 +39,7 @@ const ALL_ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
 const userFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
   role: z.enum(ALL_ROLES as [string, ...string[]]),
   status: z.enum(["Active", "Inactive"]),
 });
@@ -86,6 +87,7 @@ export default function AddUserPage() {
     defaultValues: {
       name: "",
       email: "",
+      password: "",
       role: availableRoles.length > 0 ? availableRoles[0] : "Donor",
       status: "Active",
     },
@@ -149,6 +151,19 @@ export default function AddUserPage() {
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
                       <Input placeholder="e.g. alex.ray@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

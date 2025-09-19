@@ -7,6 +7,7 @@ export type User = {
   avatarUrl: string;
   role: Role;
   status: "Active" | "Inactive";
+  password?: string;
 };
 
 export const initiatives = [

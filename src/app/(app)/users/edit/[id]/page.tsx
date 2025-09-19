@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -40,6 +39,7 @@ const ALL_ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
 const userFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters." }).optional().or(z.literal('')),
   role: z.enum(ALL_ROLES as [string, ...string[]]),
   status: z.enum(["Active", "Inactive"]),
 });
@@ -73,6 +73,7 @@ export default function EditUserPage() {
     defaultValues: {
       name: "",
       email: "",
+      password: "",
       role: "Donor",
       status: "Active",
     },
@@ -94,7 +95,10 @@ export default function EditUserPage() {
 
   useEffect(() => {
     if (user) {
-      form.reset(user);
+      form.reset({
+        ...user,
+        password: "" // Don't pre-fill password
+      });
     }
   }, [user, form]);
   
@@ -114,14 +118,20 @@ export default function EditUserPage() {
     const storedUsersString = localStorage.getItem(USERS_STORAGE_KEY);
     const storedUsers: User[] = storedUsersString ? JSON.parse(storedUsersString) : [];
 
-    const updatedUsers = storedUsers.map((u) =>
-      u.id === userId
-        ? {
-            ...u, // preserve avatarUrl and id
-            ...data, // apply form changes
-          }
-        : u
-    );
+    const updatedUsers = storedUsers.map((u) => {
+      if (u.id === userId) {
+        const updatedUser = {
+          ...u, // preserve avatarUrl and id
+          ...data, // apply form changes
+        };
+        // Only update password if a new one was entered
+        if (!data.password) {
+          delete updatedUser.password;
+        }
+        return updatedUser;
+      }
+      return u;
+    });
 
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
     window.dispatchEvent(new Event("users-updated"));
@@ -193,6 +203,19 @@ export default function EditUserPage() {
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
                       <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Password (Optional)</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="Leave blank to keep current password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
