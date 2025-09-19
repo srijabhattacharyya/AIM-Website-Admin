@@ -3,26 +3,33 @@
 import { SidebarProvider, Sidebar } from "@/components/ui/sidebar";
 import { Header } from "@/components/layout/header";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
-import type { User } from "@/lib/types";
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  // Temporary user for development
-  const devUser: User = {
-    id: "user-admin-dev",
-    name: "Dev Admin",
-    email: "dev@example.com",
-    avatarUrl: "https://picsum.photos/seed/dev/100/100",
-    role: "Admin",
-    status: "Active"
-  };
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
-  const user = devUser;
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [user, loading, router]);
+  
+  if (loading || !user) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
       <div className="flex min-h-screen">
         <Sidebar collapsible="icon">
-          {/* Use the dev user's role for the sidebar */}
           <SidebarNav role={user.role} />
         </Sidebar>
         <div className="flex flex-1 flex-col">
