@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import type { Role } from "@/lib/types";
-import { ChevronsUpDown, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export function Header() {
   const { user, logout, setRole } = useAuth();
@@ -51,7 +51,7 @@ export function Header() {
       <div className="flex flex-1 items-center justify-end gap-4">
         <div className="w-[180px]">
           <Select value={user.role} onValueChange={(value: Role) => setRole(value)}>
-            <SelectTrigger>
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Switch Role" />
             </SelectTrigger>
             <SelectContent>
