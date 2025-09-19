@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Download, IndianRupee, Search } from "lucide-react";
+import { Download, IndianRupee, Search, DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Donation } from "@/lib/types";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const DONATIONS_STORAGE_KEY = "aim-foundation-donations";
 
@@ -40,39 +41,64 @@ export default function DonationsPage() {
               Export CSV
             </Button>
           </div>
-          <div className="rounded-md border">
+          <ScrollArea className="whitespace-nowrap rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Date</TableHead>
                   <TableHead>Donor Name</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Date</TableHead>
+                  <TableHead>Mobile Number</TableHead>
+                  <TableHead>PAN</TableHead>
+                  <TableHead>Aadhaar</TableHead>
+                  <TableHead>Date of Birth</TableHead>
+                  <TableHead>Country</TableHead>
+                  <TableHead>State</TableHead>
+                  <TableHead>City</TableHead>
+                  <TableHead>PIN</TableHead>
+                  <TableHead>Address</TableHead>
+                  <TableHead>Amount (INR)</TableHead>
+                  <TableHead>Amount (USD)</TableHead>
                   <TableHead>Project</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {donations.map(donation => (
                   <TableRow key={donation.id}>
+                    <TableCell>{new Date(donation.date).toLocaleDateString()}</TableCell>
                     <TableCell className="font-medium">{donation.donorName}</TableCell>
                     <TableCell>{donation.donorEmail}</TableCell>
+                    <TableCell>{donation.mobileNumber}</TableCell>
+                    <TableCell>{donation.pan}</TableCell>
+                    <TableCell>{donation.aadhaar}</TableCell>
+                    <TableCell>{new Date(donation.dob).toLocaleDateString()}</TableCell>
+                    <TableCell>{donation.country}</TableCell>
+                    <TableCell>{donation.state}</TableCell>
+                    <TableCell>{donation.city}</TableCell>
+                    <TableCell>{donation.pin}</TableCell>
+                    <TableCell>{donation.address}</TableCell>
                     <TableCell>
                       {donation.currency === "INR" ? (
                         <span className="inline-flex items-center">
                           <IndianRupee className="h-4 w-4 mr-1" />
                           {donation.amount.toLocaleString('en-IN')}
                         </span>
-                      ) : (
-                        `$${donation.amount.toLocaleString()}`
-                      )}
+                      ) : '-'}
                     </TableCell>
-                    <TableCell>{new Date(donation.date).toLocaleDateString()}</TableCell>
+                     <TableCell>
+                      {donation.currency === "USD" ? (
+                        <span className="inline-flex items-center">
+                          <DollarSign className="h-4 w-4 mr-1" />
+                          {donation.amount.toLocaleString()}
+                        </span>
+                      ) : '-'}
+                    </TableCell>
                     <TableCell>{donation.project}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </div>
+          </ScrollArea>
         </CardContent>
       </Card>
     </div>

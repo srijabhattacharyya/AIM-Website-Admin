@@ -40,6 +40,15 @@ export type Donation = {
   id: string;
   donorName: string;
   donorEmail: string;
+  mobileNumber: string;
+  pan: string;
+  aadhaar: string;
+  dob: string;
+  country: string;
+  state: string;
+  city: string;
+  pin: string;
+  address: string;
   amount: number;
   currency: "INR" | "USD";
   date: string;
