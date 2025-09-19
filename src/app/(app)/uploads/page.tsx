@@ -121,44 +121,6 @@ export default function UploadsPage() {
     <div className="space-y-6">
       <h1 className="font-headline text-3xl font-bold tracking-tight">Photo Library</h1>
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Gallery</CardTitle>
-              <CardDescription>Browse all uploaded files. Displayed as 600x400.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {uploads.map(upload => (
-                <div key={upload.id} className="group relative aspect-[3/2] w-full">
-                  <Image 
-                    src={upload.url} 
-                    alt={upload.name} 
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="rounded-lg object-cover"
-                    data-ai-hint="event photo"
-                  />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end text-white">
-                      <p className="text-sm font-semibold">{upload.initiative}</p>
-                      <p className="text-xs text-light">{upload.description.substring(0, 50)}...</p>
-                  </div>
-                  {canManageUploads && (
-                    <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button variant="outline" size="icon" asChild>
-                        <Link href={`/uploads/edit/${upload.id}`}>
-                            <Pencil className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(upload.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
         <div>
           <Card>
             <CardHeader>
@@ -245,6 +207,44 @@ export default function UploadsPage() {
                   </Button>
                 </form>
               </Form>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Gallery</CardTitle>
+              <CardDescription>Browse all uploaded files. Displayed as 600x400.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {uploads.map(upload => (
+                <div key={upload.id} className="group relative aspect-[3/2] w-full">
+                  <Image 
+                    src={upload.url} 
+                    alt={upload.name} 
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="rounded-lg object-cover"
+                    data-ai-hint="event photo"
+                  />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end text-white">
+                      <p className="text-sm font-semibold">{upload.initiative}</p>
+                      <p className="text-xs text-light">{upload.description.substring(0, 50)}...</p>
+                  </div>
+                  {canManageUploads && (
+                    <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="outline" size="icon" asChild>
+                        <Link href={`/uploads/edit/${upload.id}`}>
+                            <Pencil className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(upload.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ))}
             </CardContent>
           </Card>
         </div>
