@@ -12,12 +12,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Upload as UploadIcon, Trash2, Loader2 } from "lucide-react";
+import { Upload as UploadIcon, Trash2, Loader2, Pencil } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/use-auth";
 import type { User, Upload, Initiative } from "@/lib/types";
 import { initiatives } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 const UPLOADS_STORAGE_KEY = "aim-foundation-uploads";
 
@@ -142,7 +143,12 @@ export default function PhotosPage() {
                       <p className="text-xs text-light">{upload.description.substring(0, 50)}...</p>
                   </div>
                   {canManageUploads && (
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="outline" size="icon" asChild>
+                        <Link href={`/photos/edit/${upload.id}`}>
+                            <Pencil className="h-4 w-4" />
+                        </Link>
+                      </Button>
                       <Button variant="destructive" size="icon" onClick={() => handleDelete(upload.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
