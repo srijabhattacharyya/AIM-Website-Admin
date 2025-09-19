@@ -27,9 +27,14 @@ export function Header() {
   const { user, logout, setRole } = useAuth();
   const roles: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
 
-  const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('');
-  }
+  const getInitials = (name?: string) => {
+    if (!name) return "U";
+    const parts = name.trim().split(" ");
+    if (parts.length > 1 && parts[1]) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return parts[0][0].toUpperCase();
+  };
 
   if (!user) {
     return (
