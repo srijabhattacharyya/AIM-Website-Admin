@@ -2,16 +2,14 @@ import type { User, Role, Project, Donation, Task, Upload, Initiative } from './
 import { initiatives } from './types';
 
 export const mockUsers: Record<Role, User> = {
-  Admin: { id: "user-admin-01", name: "Alex Ray", email: "alex.ray@example.com", avatarUrl: "https://picsum.photos/seed/alex/100/100", role: "Admin", status: "Active" },
-  Manager: { id: "user-manager-01", name: "Jordan Lee", email: "jordan.lee@example.com", avatarUrl: "https://picsum.photos/seed/jordan/100/100", role: "Manager", status: "Active" },
-  Volunteer: { id: "user-volunteer-01", name: "Casey Smith", email: "casey.smith@example.com", avatarUrl: "https://picsum.photos/seed/casey/100/100", role: "Volunteer", status: "Active" },
-  Intern: { id: "user-intern-01", name: "Taylor Green", email: "taylor.green@example.com", avatarUrl: "https://picsum.photos/seed/taylor/100/100", role: "Intern", status: "Active" },
-  Donor: { id: "user-donor-01", name: "Morgan Brown", email: "morgan.brown@example.com", avatarUrl: "https://picsum.photos/seed/morgan/100/100", role: "Donor", status: "Active" },
+  Admin: {} as User,
+  Manager: {} as User,
+  Volunteer: {} as User,
+  Intern: {} as User,
+  Donor: {} as User,
 };
 
-export const allMockUsers: User[] = [
-  { id: "user-admin-01", name: "Alex Ray", email: "alex.ray@example.com", avatarUrl: "https://picsum.photos/seed/alex/100/100", role: "Admin", status: "Active" }
-];
+export const allMockUsers: User[] = [];
 
 export const mockProjects: Project[] = [];
 
