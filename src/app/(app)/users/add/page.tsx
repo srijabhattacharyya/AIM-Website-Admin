@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,8 +31,9 @@ import {
 } from "@/components/ui/card";
 import { type User, type Role } from "@/lib/types";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { Progress } from "@/components/ui/progress";
 
 const USERS_STORAGE_KEY = "aim-foundation-users";
 const ALL_ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
@@ -39,17 +41,33 @@ const ALL_ROLES: Role[] = ["Admin", "Manager", "Volunteer", "Intern", "Donor"];
 const userFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  password: z.string()
+    .min(8, { message: "Password must be at least 8 characters." })
+    .refine(value => /[A-Z]/.test(value), { message: "Password must contain at least one uppercase letter." })
+    .refine(value => /[a-z]/.test(value), { message: "Password must contain at least one lowercase letter." })
+    .refine(value => /\d/.test(value), { message: "Password must contain at least one number." })
+    .refine(value => /[@$!%*?&]/.test(value), { message: "Password must contain at least one special character (@$!%*?&)." }),
   role: z.enum(ALL_ROLES as [string, ...string[]]),
   status: z.enum(["Active", "Inactive"]),
 });
 
 type UserFormValues = z.infer<typeof userFormSchema>;
 
+const checkPasswordStrength = (password: string): number => {
+  let strength = 0;
+  if (password.length >= 8) strength++;
+  if (/[a-z]/.test(password)) strength++;
+  if (/[A-Z]/.test(password)) strength++;
+  if (/\d/.test(password)) strength++;
+  if (/[@$!%*?&]/.test(password)) strength++;
+  return (strength / 5) * 100;
+}
+
 export default function AddUserPage() {
   const router = useRouter();
   const { user: authUser } = useAuth();
   const [hydrated, setHydrated] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const devUser: User = {
     id: "user-admin-dev",
@@ -92,6 +110,15 @@ export default function AddUserPage() {
       status: "Active",
     },
   });
+  
+  const password = form.watch("password");
+  const passwordStrength = checkPasswordStrength(password || "");
+
+  const getStrengthColor = (strength: number) => {
+    if (strength < 50) return "bg-red-500";
+    if (strength < 80) return "bg-yellow-500";
+    return "bg-green-500";
+  }
 
   const onSubmit = (data: UserFormValues) => {
     if (!hydrated) return;
@@ -162,9 +189,28 @@ export default function AddUserPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
-                    </FormControl>
+                    <div className="relative">
+                      <FormControl>
+                        <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} />
+                      </FormControl>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                      </Button>
+                    </div>
+                     {password && (
+                        <div className="space-y-2 pt-1">
+                          <Progress value={passwordStrength} className={`h-2 ${getStrengthColor(passwordStrength)}`}/>
+                          <p className="text-xs text-muted-foreground">
+                            Password must contain uppercase, lowercase, number, and special character.
+                          </p>
+                        </div>
+                      )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -224,3 +270,4 @@ export default function AddUserPage() {
     </div>
   );
 }
+
